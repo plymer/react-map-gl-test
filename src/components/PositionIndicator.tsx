@@ -10,8 +10,7 @@ const PositionIndicator = ({ coords }: Props) => {
     <Stack direction="horizontal">
       {coords ? (
         <>
-          <CiGlobe className="" />
-          {coords[1]} N {coords[0]} W
+          <CiGlobe className="" /> {coords[1].toFixed(2)} N {coords[0].toFixed(2)} W
         </>
       ) : (
         ""

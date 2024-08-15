@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import Map from "react-map-gl/maplibre";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Stack } from "react-bootstrap";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./App.css";
+
+import WMSLayer from "./components/WMSLayer";
 import PositionIndicator from "./components/PositionIndicator";
 
 function App() {
@@ -13,7 +15,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [coords, setCoords] = useState<number[]>();
 
-  const defaultView = [-113, 53, 8];
+  const defaultView = [-113, 53, 3];
 
   // grab the style sheet for the map display we are wanting to show
   useEffect(() => {
@@ -36,21 +38,28 @@ function App() {
           latitude: defaultView[1],
           zoom: defaultView[2],
         }}
-        style={{ width: "600px", height: "600px" }}
+        style={{ width: "100%", height: "100vh" }}
         mapStyle={style}
-        onLoad={() => setCoords([defaultView[0], defaultView[1]])}
-        onData={() => setIsLoading(true)}
-        onIdle={() => setIsLoading(false)}
-        onMove={(e) => setCoords([e.viewState.longitude, e.viewState.latitude])}
-      />
-      <PositionIndicator coords={coords} />
-      {isLoading ? (
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      ) : (
-        ""
-      )}
+        onLoad={/* populate the map centre coords */ () => setCoords([defaultView[0], defaultView[1]])}
+        onData={/* while data is loading, set our loading flag to 'on' */ () => setIsLoading(true)}
+        onIdle={/* while nothing is happening in the map, set our loading flag to 'off' */ () => setIsLoading(false)}
+        onMove={
+          /* update our map-center lat-lon whenever we move the map view */
+          (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
+        }
+      >
+        <WMSLayer type="satellite" subProduct="1km_DayCloudType-NightMicrophysics" />
+      </Map>
+      <Stack direction="horizontal" className="map-status">
+        <PositionIndicator coords={coords} />
+        {isLoading ? (
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
+          ""
+        )}
+      </Stack>
     </>
   );
 }
