@@ -10,7 +10,13 @@ const PositionIndicator = ({ coords }: Props) => {
     <Stack direction="horizontal">
       {coords ? (
         <>
-          <CiGlobe className="" /> {coords[1].toFixed(2)} N {coords[0].toFixed(2)} W
+          <CiGlobe />
+          <span className="ps-2">
+            {Math.abs(parseFloat(coords[1].toFixed(2)))} {coords[1] > 0 ? "N" : "S"}
+          </span>
+          <span className="ps-2">
+            {Math.abs(parseFloat(coords[0].toFixed(2)))} {coords[0] > 0 ? "E" : "W"}
+          </span>
         </>
       ) : (
         ""

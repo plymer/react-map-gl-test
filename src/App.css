@@ -9,11 +9,24 @@
 }
 
 .map-status {
-  position: aboslute;
-  bottom: 0;
+  position: absolute;
+  top: 0;
   left: 0;
-  transform: translateY(-100%);
-  background-color: #111;
-  color: #eee;
+  background-color: #232323;
+  color: #fff;
   min-height: 2rem;
+  width: 225px;
+  padding-right: 1rem;
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  border-radius: 0 0 8px 0;
+}
+
+.map-controls-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: #232323;
+  color: #fff;
+  width: 100%;
 }
