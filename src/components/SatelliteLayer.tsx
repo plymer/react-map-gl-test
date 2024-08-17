@@ -1,46 +1,66 @@
 import type { RasterLayer, RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
+import { parseTimes } from "../utilities/GeoMetSetup";
+import { useAnimationContext } from "../contexts/animationContext";
+import { useEffect } from "react";
+import { GEOMET_GETCAPABILITIES, GEOMET_GETMAP } from "../utilities/constants";
+import axios from "axios";
 
 interface Props {
-  time?: number;
-  domain: "east" | "west";
-  subProduct: string;
+    domain: "east" | "west";
+    subProduct: string;
 }
 
-const SatelliteLayer = ({ time, domain, subProduct }: Props) => {
-  var satelliteName = "";
+const SatelliteLayer = ({ domain, subProduct }: Props) => {
+    var satelliteName = "";
 
-  domain === "west" ? (satelliteName = "GOES-West") : (satelliteName = "GOES-East");
+    const animationContext = useAnimationContext();
 
-  const wmsBaseURL =
-    "https://geo.weather.gc.ca/geomet?service=WMS&version=1.3.0&request=GetMap&format=image/png&bbox={bbox-epsg-3857}&crs=EPSG:3857&width=256&height=256&layers=";
+    domain === "west" ? (satelliteName = "GOES-West") : (satelliteName = "GOES-East");
 
-  // const wmsURL =
-  // "https://geo.weather.gc.ca/geomet?service=WMS&version=1.3.0&request=GetMap&format=image/png&bbox={bbox-epsg-3857}&crs=EPSG:3857&width=256&height=256&layers=GOES-West_1km_DayCloudType-NightMicrophysics";}
+    useEffect(() => {
+        axios
+            .get(GEOMET_GETCAPABILITIES + satelliteName + "_" + subProduct)
+            .then((response) => {
+                if (parseTimes(response.data)) {
+                    const times = parseTimes(response.data);
+                    if (times) {
+                        animationContext.setTimeStart(times.timeStart);
+                        animationContext.setTimeEnd(times.timeEnd);
+                        animationContext.setFrameCount(times.timeSlices);
+                    }
+                }
+            })
+            .catch((error: Error) => {
+                console.log(error.message);
+            });
 
-  const source: RasterSource = {
-    type: "raster",
-    tiles: [wmsBaseURL + satelliteName + "_" + subProduct],
-    tileSize: 256,
-    bounds: domain === "west" ? [-180, -90, -100, 90] : [-100, -90, 180, 90],
-  };
+        animationContext.setCurrentTime(Date.now());
+    }, []);
 
-  const layer: RasterLayer = {
-    id: "layer-" + domain,
-    type: "raster",
-    paint: {},
-    source: "source",
-  };
+    const source: RasterSource = {
+        type: "raster",
+        tiles: [GEOMET_GETMAP + satelliteName + "_" + subProduct],
+        tileSize: 256,
+        bounds: domain === "west" ? [-180, -90, -100, 90] : [-100, -90, 180, 90],
+    };
 
-  // TODO:: re-do this so that it creates just one source/layer pair so we can add two WMSLayer components to the app
+    const layer: RasterLayer = {
+        id: "layer-" + domain,
+        type: "raster",
+        paint: {},
+        source: "source",
+    };
 
-  return (
-    <>
-      <Source {...source}>
-        <Layer {...layer} beforeId="wateroutline" />
-      </Source>
-    </>
-  );
+    // TODO:: re-do this so that it creates just one source/layer pair so we can add two WMSLayer components to the app
+
+    return (
+        <>
+            <Source {...source}>
+                <Layer {...layer} beforeId="wateroutline" />
+            </Source>
+        </>
+    );
 };
 
 export default SatelliteLayer;
