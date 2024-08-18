@@ -20,7 +20,8 @@ const SatelliteLayer = ({ domain, subProduct }: Props) => {
     domain === "west" ? (satelliteName = "GOES-West") : (satelliteName = "GOES-East");
 
     const getTimes = async () => {
-        var times: LayerAnimationTime = { timeDiff: 0, timeEnd: 0, timeSlices: 0, timeStart: 0 };
+        var times: LayerAnimationTime = { timeDiff: 0, timeEnd: Date.now(), timeSlices: 1, timeStart: Date.now() };
+
         axios
             .get(GEOMET_GETCAPABILITIES + satelliteName + "_" + subProduct)
             .then((response) => {
@@ -29,7 +30,12 @@ const SatelliteLayer = ({ domain, subProduct }: Props) => {
                     animationContext.setTimeStart(times.timeStart);
                     animationContext.setTimeEnd(times.timeEnd);
                     animationContext.setFrameCount(times.timeSlices);
-                    generateTimeSteps(animationContext.timeStart, animationContext.timeEnd, animationContext.frameCount);
+                    animationContext.setAnimationFrame(times.timeSlices - 1);
+                    animationContext.setTimeSteps(generateTimeSteps(animationContext.timeStart, animationContext.timeEnd, animationContext.frameCount));
+                    animationContext.setTileURL(GEOMET_GETMAP + satelliteName + "_" + subProduct + "&time=" + animationContext.timeSteps[animationContext.animationFrame]);
+                    console.log("timestamp is:", animationContext.timeSteps[animationContext.animationFrame]);
+
+                    // source.tiles = [animationContext.tileURL];
                 }
             })
             .catch((error: Error) => {
@@ -40,12 +46,12 @@ const SatelliteLayer = ({ domain, subProduct }: Props) => {
     useEffect(() => {
         getTimes();
 
-        console.log("updating capabilities for", satelliteName + "_" + subProduct);
+        // source.tiles = [tileURL];
 
-        return () => {
-            console.log("satellite layer cleanup");
-        };
+        return () => {};
     }, [animationContext.currentTime]);
+
+    // console.log("tileURL is set to: ", animationContext.tileURL);
 
     const source: RasterSource = {
         type: "raster",
@@ -61,6 +67,9 @@ const SatelliteLayer = ({ domain, subProduct }: Props) => {
         source: "source",
     };
 
+    // source.tiles = [`${tileURL}`];
+
+    // console.log(source.tiles);
     // TODO:: re-do this so that it creates just one source/layer pair so we can add two WMSLayer components to the app
 
     return (

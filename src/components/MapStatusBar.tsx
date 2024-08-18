@@ -22,7 +22,7 @@ const MapStatusBar = ({ center, loadState }: Props) => {
                     <div className="mx-4 "></div>
                 )}
                 <PositionIndicator coords={center} />
-                <span className="mx-4">{makeISOTimeStamp(animationContext.currentTime)}</span>
+                <span className="mx-4">{makeISOTimeStamp(animationContext.currentTime, "display")}</span>
             </Stack>
         </>
     );

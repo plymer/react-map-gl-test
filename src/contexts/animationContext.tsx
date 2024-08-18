@@ -16,6 +16,10 @@ export interface IAnimationContext {
     setCurrentTime: React.Dispatch<React.SetStateAction<IAnimationContext["currentTime"]>>;
     frameRate: number;
     setFrameRate: React.Dispatch<React.SetStateAction<IAnimationContext["frameRate"]>>;
+    timeSteps: string[];
+    setTimeSteps: React.Dispatch<React.SetStateAction<IAnimationContext["timeSteps"]>>;
+    tileURL: string;
+    setTileURL: React.Dispatch<React.SetStateAction<IAnimationContext["tileURL"]>>;
 }
 
 export const AnimationContext = createContext<IAnimationContext | null>(null);
@@ -28,6 +32,8 @@ export const AnimationContextProvider = ({ children }: React.PropsWithChildren<{
     const [timeEnd, setTimeEnd] = useState<IAnimationContext["timeEnd"]>(0);
     const [currentTime, setCurrentTime] = useState<IAnimationContext["currentTime"]>(Date.now());
     const [frameRate, setFrameRate] = useState<IAnimationContext["frameRate"]>(10);
+    const [timeSteps, setTimeSteps] = useState<IAnimationContext["timeSteps"]>([]);
+    const [tileURL, setTileURL] = useState<IAnimationContext["tileURL"]>("");
 
     const value = useMemo(
         () => ({
@@ -45,8 +51,12 @@ export const AnimationContextProvider = ({ children }: React.PropsWithChildren<{
             setCurrentTime,
             frameRate,
             setFrameRate,
+            timeSteps,
+            setTimeSteps,
+            tileURL,
+            setTileURL,
         }),
-        [animationState, animationFrame, currentTime, frameRate]
+        [animationState, animationFrame, currentTime, frameRate, timeSteps, tileURL]
     );
 
     return <AnimationContext.Provider value={value}>{children}</AnimationContext.Provider>;

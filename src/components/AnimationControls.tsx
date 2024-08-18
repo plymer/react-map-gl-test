@@ -8,12 +8,12 @@ import { makeISOTimeStamp } from "../utilities/GeoMetSetup";
 
 const AnimationControls = () => {
     const animationContext = useAnimationContext();
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
+    const [startTime, setStartTime] = useState(makeISOTimeStamp(animationContext.timeStart, "display"));
+    const [endTime, setEndTime] = useState(makeISOTimeStamp(animationContext.timeEnd, "display"));
 
     useEffect(() => {
-        setStartTime(makeISOTimeStamp(animationContext.timeStart));
-        setEndTime(makeISOTimeStamp(animationContext.timeEnd));
+        setStartTime(makeISOTimeStamp(animationContext.timeStart, "display"));
+        setEndTime(makeISOTimeStamp(animationContext.timeEnd, "display"));
     }, [animationContext.currentTime]);
 
     const handleClick = (control: string) => {
