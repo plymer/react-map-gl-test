@@ -10,7 +10,8 @@ import SatelliteLayer from "./components/SatelliteLayer";
 import MapControlsBar from "./components/MapControlsBar";
 import { View } from "./utilities/types";
 import { AttributionControl } from "react-map-gl";
-import { AnimationContextProvider, useAnimationContext } from "./contexts/animationContext";
+import { AnimationContextProvider } from "./contexts/animationContext";
+import SynchroClock from "./components/SynchroClock";
 
 // set the default values for the map centre and the zoom level
 const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
@@ -36,11 +37,17 @@ function App() {
             .catch((error) => {
                 console.log(error);
             });
+
+        return () => {
+            console.log("cleanup from app");
+        };
     }, []);
 
     return (
         <>
             <AnimationContextProvider>
+                <MapControlsBar />
+                <SynchroClock />
                 <Map
                     initialViewState={{
                         longitude: defaultView.lon,
@@ -77,7 +84,6 @@ function App() {
                     <AttributionControl compact position="top-right" />
                 </Map>
                 <MapStatusBar center={coords} loadState={isLoading} />
-                <MapControlsBar />
             </AnimationContextProvider>
         </>
     );

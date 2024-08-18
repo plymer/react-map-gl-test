@@ -1,7 +1,7 @@
 import { createContext, useMemo, useState } from "react";
 import useContextWrapper from "../utilities/useContextWrapper";
 
-interface IAnimationContext {
+export interface IAnimationContext {
     animationState: boolean; // isAnimating true/false
     setAnimationState: React.Dispatch<React.SetStateAction<IAnimationContext["animationState"]>>;
     animationFrame: number; // which frame is being displayed
@@ -14,6 +14,8 @@ interface IAnimationContext {
     setTimeEnd: React.Dispatch<React.SetStateAction<IAnimationContext["timeEnd"]>>;
     currentTime: number;
     setCurrentTime: React.Dispatch<React.SetStateAction<IAnimationContext["currentTime"]>>;
+    frameRate: number;
+    setFrameRate: React.Dispatch<React.SetStateAction<IAnimationContext["frameRate"]>>;
 }
 
 export const AnimationContext = createContext<IAnimationContext | null>(null);
@@ -24,7 +26,8 @@ export const AnimationContextProvider = ({ children }: React.PropsWithChildren<{
     const [frameCount, setFrameCount] = useState<IAnimationContext["frameCount"]>(0);
     const [timeStart, setTimeStart] = useState<IAnimationContext["timeStart"]>(0);
     const [timeEnd, setTimeEnd] = useState<IAnimationContext["timeEnd"]>(0);
-    const [currentTime, setCurrentTime] = useState<IAnimationContext["currentTime"]>(0);
+    const [currentTime, setCurrentTime] = useState<IAnimationContext["currentTime"]>(Date.now());
+    const [frameRate, setFrameRate] = useState<IAnimationContext["frameRate"]>(10);
 
     const value = useMemo(
         () => ({
@@ -40,8 +43,10 @@ export const AnimationContextProvider = ({ children }: React.PropsWithChildren<{
             setTimeEnd,
             currentTime,
             setCurrentTime,
+            frameRate,
+            setFrameRate,
         }),
-        [animationState, animationFrame, currentTime]
+        [animationState, animationFrame, currentTime, frameRate]
     );
 
     return <AnimationContext.Provider value={value}>{children}</AnimationContext.Provider>;

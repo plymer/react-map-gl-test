@@ -2,26 +2,57 @@ export const parseTimes = (xml: string) => {
     const parser = new DOMParser();
 
     let dimString = parser.parseFromString(xml, "text/xml").getElementsByTagName("Dimension")[0].childNodes[0].nodeValue?.split("/");
-
+    // console.log(dimString);
     if (dimString) {
+        // the time closest to the current datetime
         let timeStart = Date.parse(dimString[0]);
+        // the oldest available timestep for the data
         let timeEnd = Date.parse(dimString[1]);
+        // the time slice between time steps
         let timeDiff = parseInt(dimString[2].replace(/[a-zA-z]/g, "")) * 1000 * 60;
 
+        // we only want to allow for a certain number of hours of data to be displayed
+        // we will assume 6 hours for testing
+        // 6 hours * 60 minutes * 60 seconds * 1000 milliseconds
+        let HRS_DATA = 6 * 1000 * 60 * 60;
+
+        // check to see if the end time in the data range is longer than our cutoff
+        // if it is, we use the data cutoff as our end time
+
+        // console.log("before", makeISOTimeStamp(timeStart), makeISOTimeStamp(timeEnd));
+
+        timeStart > timeEnd - HRS_DATA ? (timeStart = timeStart) : (timeStart = timeEnd - HRS_DATA);
+
+        // console.log("after", makeISOTimeStamp(timeStart), makeISOTimeStamp(timeEnd));
+
+        // calculate how many frames of data we are able to display for our total time range
         let timeSlices = (timeEnd - timeStart) / timeDiff;
 
-        if (timeSlices > 60) {
-            timeSlices = 60;
-            timeEnd = timeStart - timeSlices * timeDiff;
-        }
+        // console.log(timeEnd, timeStart, timeSlices);
+
         return { timeStart: timeStart, timeEnd: timeEnd, timeSlices: timeSlices, timeDiff: timeDiff };
     }
 };
 
-export const makeISOTimeStamp = (time: number, slice?: number, delta?: number) => {
-    var totalDelta: number;
+export const makeISOTimeStamp = (time: number) => {
+    return new Date(time).toISOString().replace(/:\d+.\d+Z$/g, "Z");
+};
 
-    slice && delta ? (totalDelta = slice * delta) : (totalDelta = 0);
+/**
+ * Create time steps for animation.
+ * @param startTime the earliest time available in the dataset
+ * @param endTime the most-recent time available in the dataset
+ * @param timeSteps the number of frames available in the dataset
+ * @returns an array of strings.
+ */
+export const generateTimeSteps = async (startTime: number, endTime: number, timeSteps: number) => {
+    // console.log("inputs for TimeStepGeneration:", startTime, endTime, timeSteps);
+    const delta = (endTime - startTime) / timeSteps;
+    var output: string[] = [];
 
-    return new Date(time + totalDelta).toISOString().replace(/.\d+Z$/g, "Z");
+    for (var i = 0; i < timeSteps; i++) {
+        output[i] = makeISOTimeStamp(startTime + delta * i);
+    }
+
+    // console.log(output);
 };

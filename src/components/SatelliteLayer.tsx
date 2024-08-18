@@ -1,10 +1,11 @@
+import axios from "axios";
+import { useEffect } from "react";
 import type { RasterLayer, RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
-import { parseTimes } from "../utilities/GeoMetSetup";
 import { useAnimationContext } from "../contexts/animationContext";
-import { useEffect } from "react";
 import { GEOMET_GETCAPABILITIES, GEOMET_GETMAP } from "../utilities/constants";
-import axios from "axios";
+import { generateTimeSteps, parseTimes } from "../utilities/GeoMetSetup";
+import { LayerAnimationTime } from "../utilities/types";
 
 interface Props {
     domain: "east" | "west";
@@ -18,25 +19,33 @@ const SatelliteLayer = ({ domain, subProduct }: Props) => {
 
     domain === "west" ? (satelliteName = "GOES-West") : (satelliteName = "GOES-East");
 
-    useEffect(() => {
+    const getTimes = async () => {
+        var times: LayerAnimationTime = { timeDiff: 0, timeEnd: 0, timeSlices: 0, timeStart: 0 };
         axios
             .get(GEOMET_GETCAPABILITIES + satelliteName + "_" + subProduct)
             .then((response) => {
-                if (parseTimes(response.data)) {
-                    const times = parseTimes(response.data);
-                    if (times) {
-                        animationContext.setTimeStart(times.timeStart);
-                        animationContext.setTimeEnd(times.timeEnd);
-                        animationContext.setFrameCount(times.timeSlices);
-                    }
+                times = parseTimes(response.data) as LayerAnimationTime;
+                if (times) {
+                    animationContext.setTimeStart(times.timeStart);
+                    animationContext.setTimeEnd(times.timeEnd);
+                    animationContext.setFrameCount(times.timeSlices);
+                    generateTimeSteps(animationContext.timeStart, animationContext.timeEnd, animationContext.frameCount);
                 }
             })
             .catch((error: Error) => {
                 console.log(error.message);
             });
+    };
 
-        animationContext.setCurrentTime(Date.now());
-    }, []);
+    useEffect(() => {
+        getTimes();
+
+        console.log("updating capabilities for", satelliteName + "_" + subProduct);
+
+        return () => {
+            console.log("satellite layer cleanup");
+        };
+    }, [animationContext.currentTime]);
 
     const source: RasterSource = {
         type: "raster",
