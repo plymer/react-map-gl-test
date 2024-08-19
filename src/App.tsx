@@ -31,7 +31,7 @@ const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
 function App() {
     const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
 
-    const { data: style, isFetched: styleLoaded } = useQuery({
+    const { data: mapStyle, isFetched: styleLoaded } = useQuery({
         queryKey: ["mapStyle"],
         queryFn: getStyle,
     });
@@ -58,7 +58,7 @@ function App() {
                             touchPitch={false}
                             boxZoom={false}
                             style={{ width: "100%", height: "100vh" }}
-                            mapStyle={style}
+                            mapStyle={mapStyle}
                             onLoad={
                                 /* populate the map centre coords with the default values */
                                 () => setCoords([defaultView.lon, defaultView.lat])
