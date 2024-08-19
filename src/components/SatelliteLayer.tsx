@@ -3,55 +3,65 @@ import type { RasterLayer, RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
 import { useClockContext } from "../contexts/clockContext";
+import { useAnimationContext } from "../contexts/animationContext";
 
 import { LayerDetails } from "../utilities/types";
-
-import useSatellite from "../hooks/useSatellite";
-import { useAnimationContext } from "../contexts/animationContext";
 import { GEOMET_GETMAP } from "../utilities/constants";
 
+import useSatellite from "../hooks/useSatellite";
+
 interface Props {
-    satellite: "GOES-West" | "GOES-East";
-    subProduct: string;
+  satellite: "GOES-West" | "GOES-East";
+  subProduct: string;
 }
 
 const SatelliteLayer = ({ satellite, subProduct }: Props) => {
-    const animationContext = useAnimationContext();
-    const clockContext = useClockContext();
+  const animationContext = useAnimationContext();
+  const clockContext = useClockContext();
 
-    const [layerInfo, setLayerInfo] = useState<LayerDetails>();
+  const [layerInfo, setLayerInfo] = useState<LayerDetails>();
 
-    const { data: timeData, isSuccess, isRefetching } = useSatellite(satellite, subProduct);
+  const { data: timeData, isSuccess, isRefetching } = useSatellite(satellite, subProduct);
 
-    useEffect(() => {
-        if (timeData) setLayerInfo(timeData);
-    }, [clockContext.time]);
+  const updateTimes = (times: LayerDetails) => {
+    setLayerInfo(times);
+    animationContext.setEndTime(times.timeEnd);
+    animationContext.setStartTime(times.timeStart);
+  };
 
-    // HOLY SHIT THIS ACTUALLY WORKS
+  useEffect(() => {
+    if (timeData) updateTimes(timeData);
+  }, []);
 
-    const tileURL = layerInfo?.urls[animationContext.currentFrame];
+  useEffect(() => {
+    if (timeData) updateTimes(timeData);
+  }, [clockContext.time]);
 
-    const source: RasterSource = {
-        type: "raster",
-        tiles: [tileURL || GEOMET_GETMAP + satellite + "_" + subProduct],
-        tileSize: 256,
-        bounds: satellite === "GOES-West" ? [-180, -90, -100, 90] : [-100, -90, 180, 90],
-    };
+  // HOLY SHIT THIS ACTUALLY WORKS
 
-    const layer: RasterLayer = {
-        id: "layer-" + satellite,
-        type: "raster",
-        paint: {},
-        source: "source",
-    };
+  const tileURL = layerInfo?.urls[animationContext.currentFrame];
 
-    return (
-        <>
-            <Source {...source}>
-                <Layer {...layer} beforeId="wateroutline" />
-            </Source>
-        </>
-    );
+  const source: RasterSource = {
+    type: "raster",
+    tiles: [tileURL || GEOMET_GETMAP + satellite + "_" + subProduct],
+    tileSize: 256,
+    bounds: satellite === "GOES-West" ? [-180, -90, -100, 90] : [-100, -90, 180, 90],
+  };
+
+  const layer: RasterLayer = {
+    id: "layer-" + satellite,
+    type: "raster",
+    paint: {},
+    source: "source",
+  };
+
+  return (
+    <>
+      <Source {...source}>
+        <Layer {...layer} beforeId="wateroutline" />
+      </Source>
+    </>
+  );
 };
 
 export default SatelliteLayer;
