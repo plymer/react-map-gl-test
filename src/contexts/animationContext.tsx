@@ -4,59 +4,35 @@ import useContextWrapper from "../utilities/useContextWrapper";
 export interface IAnimationContext {
     animationState: boolean; // isAnimating true/false
     setAnimationState: React.Dispatch<React.SetStateAction<IAnimationContext["animationState"]>>;
-    animationFrame: number; // which frame is being displayed
-    setAnimationFrame: React.Dispatch<React.SetStateAction<IAnimationContext["animationFrame"]>>;
+    currentFrame: number; // which frame is being displayed
+    setCurrentFrame: React.Dispatch<React.SetStateAction<IAnimationContext["currentFrame"]>>;
     frameCount: number; // how many frames are in the animation
     setFrameCount: React.Dispatch<React.SetStateAction<IAnimationContext["frameCount"]>>;
-    timeStart: number;
-    setTimeStart: React.Dispatch<React.SetStateAction<IAnimationContext["timeStart"]>>;
-    timeEnd: number;
-    setTimeEnd: React.Dispatch<React.SetStateAction<IAnimationContext["timeEnd"]>>;
-    currentTime: number;
-    setCurrentTime: React.Dispatch<React.SetStateAction<IAnimationContext["currentTime"]>>;
     frameRate: number;
     setFrameRate: React.Dispatch<React.SetStateAction<IAnimationContext["frameRate"]>>;
-    timeSteps: string[];
-    setTimeSteps: React.Dispatch<React.SetStateAction<IAnimationContext["timeSteps"]>>;
-    tileURL: string;
-    setTileURL: React.Dispatch<React.SetStateAction<IAnimationContext["tileURL"]>>;
 }
 
 export const AnimationContext = createContext<IAnimationContext | null>(null);
 
 export const AnimationContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
     const [animationState, setAnimationState] = useState<IAnimationContext["animationState"]>(false);
-    const [animationFrame, setAnimationFrame] = useState<IAnimationContext["animationFrame"]>(0);
-    const [frameCount, setFrameCount] = useState<IAnimationContext["frameCount"]>(0);
-    const [timeStart, setTimeStart] = useState<IAnimationContext["timeStart"]>(0);
-    const [timeEnd, setTimeEnd] = useState<IAnimationContext["timeEnd"]>(0);
-    const [currentTime, setCurrentTime] = useState<IAnimationContext["currentTime"]>(Date.now());
+    const [frameCount, setFrameCount] = useState<IAnimationContext["frameCount"]>(18);
+    const [currentFrame, setCurrentFrame] = useState<IAnimationContext["currentFrame"]>(frameCount - 1);
     const [frameRate, setFrameRate] = useState<IAnimationContext["frameRate"]>(10);
-    const [timeSteps, setTimeSteps] = useState<IAnimationContext["timeSteps"]>([]);
-    const [tileURL, setTileURL] = useState<IAnimationContext["tileURL"]>("");
 
     const value = useMemo(
         () => ({
             animationState,
             setAnimationState,
-            animationFrame,
-            setAnimationFrame,
+            currentFrame,
+            setCurrentFrame,
             frameCount,
             setFrameCount,
-            timeStart,
-            setTimeStart,
-            timeEnd,
-            setTimeEnd,
-            currentTime,
-            setCurrentTime,
+
             frameRate,
             setFrameRate,
-            timeSteps,
-            setTimeSteps,
-            tileURL,
-            setTileURL,
         }),
-        [animationState, animationFrame, currentTime, frameRate, timeSteps, tileURL]
+        [animationState, currentFrame, frameRate]
     );
 
     return <AnimationContext.Provider value={value}>{children}</AnimationContext.Provider>;

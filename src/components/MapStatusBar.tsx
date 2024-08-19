@@ -1,7 +1,8 @@
 import { Spinner, Stack } from "react-bootstrap";
 import PositionIndicator from "./PositionIndicator";
-import { useAnimationContext } from "../contexts/animationContext";
+
 import { makeISOTimeStamp } from "../utilities/GeoMetSetup";
+import { useClockContext } from "../contexts/clockContext";
 
 interface Props {
     center?: number[];
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const MapStatusBar = ({ center, loadState }: Props) => {
-    const animationContext = useAnimationContext();
+    const clockContext = useClockContext();
 
     return (
         <>
@@ -22,7 +23,7 @@ const MapStatusBar = ({ center, loadState }: Props) => {
                     <div className="mx-4 "></div>
                 )}
                 <PositionIndicator coords={center} />
-                <span className="mx-4">{makeISOTimeStamp(animationContext.currentTime, "display")}</span>
+                <span className="mx-4">{makeISOTimeStamp(clockContext.time, "display")}</span>
             </Stack>
         </>
     );

@@ -66,6 +66,4 @@ export const generateTimeSteps = (startTime: number, endTime: number, timeSteps:
     }
 
     return output;
-
-    // console.log(output);
 };

@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.51.23",
+    "@tanstack/react-query-devtools": "^5.51.23",
     "@types/mapbox-gl": "^3.4.0",
     "axios": "^1.7.4",
     "bootstrap": "^5.3.3",

@@ -3,18 +3,23 @@ import { ButtonGroup, ButtonToolbar, ProgressBar, Stack, Form } from "react-boot
 
 import AnimationControlButton from "./AnimationControlButton";
 import { useAnimationContext } from "../contexts/animationContext";
+import { useClockContext } from "../contexts/clockContext";
 import { ANIM_CONTROLS } from "../utilities/constants";
 import { makeISOTimeStamp } from "../utilities/GeoMetSetup";
+import { useSatelliteContext } from "../contexts/satelliteContext";
 
 const AnimationControls = () => {
+    const satelliteContext = useSatelliteContext();
     const animationContext = useAnimationContext();
-    const [startTime, setStartTime] = useState(makeISOTimeStamp(animationContext.timeStart, "display"));
-    const [endTime, setEndTime] = useState(makeISOTimeStamp(animationContext.timeEnd, "display"));
+    const clockContext = useClockContext();
+
+    const [startTime, setStartTime] = useState(makeISOTimeStamp(satelliteContext.oldestTime, "display"));
+    const [endTime, setEndTime] = useState(makeISOTimeStamp(satelliteContext.newestTime, "display"));
 
     useEffect(() => {
-        setStartTime(makeISOTimeStamp(animationContext.timeStart, "display"));
-        setEndTime(makeISOTimeStamp(animationContext.timeEnd, "display"));
-    }, [animationContext.currentTime]);
+        setStartTime(makeISOTimeStamp(satelliteContext.oldestTime, "display"));
+        setEndTime(makeISOTimeStamp(satelliteContext.newestTime, "display"));
+    }, [clockContext.time]);
 
     const handleClick = (control: string) => {
         switch (control) {
@@ -27,24 +32,24 @@ const AnimationControls = () => {
                 break;
             case "next":
                 animationContext.setAnimationState(false);
-                animationContext.setAnimationFrame(animationContext.animationFrame + 1);
+                animationContext.setCurrentFrame(animationContext.currentFrame + 1);
                 break;
             case "prev":
                 animationContext.setAnimationState(false);
-                animationContext.setAnimationFrame(animationContext.animationFrame - 1);
+                animationContext.setCurrentFrame(animationContext.currentFrame - 1);
                 break;
             case "first":
                 animationContext.setAnimationState(false);
-                animationContext.setAnimationFrame(animationContext.frameCount - 1);
+                animationContext.setCurrentFrame(animationContext.frameCount - 1);
                 break;
             case "last":
                 animationContext.setAnimationState(false);
-                animationContext.setAnimationFrame(0);
+                animationContext.setCurrentFrame(0);
                 break;
         }
     };
 
-    const animationProgress = (animationContext.animationFrame / (animationContext.frameCount - 1)) * 100;
+    const animationProgress = (animationContext.currentFrame / (animationContext.frameCount - 1)) * 100;
 
     return (
         <>

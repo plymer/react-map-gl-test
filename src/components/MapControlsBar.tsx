@@ -3,7 +3,7 @@ import AnimationControls from "./AnimationControls";
 
 const MapControlsBar = () => {
     return (
-        <Stack direction="horizontal" className="map-controls-bar" style={{ zIndex: 9999 }}>
+        <Stack direction="horizontal" className="map-controls-bar">
             <AnimationControls />
         </Stack>
     );

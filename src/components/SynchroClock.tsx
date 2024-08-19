@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAnimationContext } from "../contexts/animationContext";
+import { useClockContext } from "../contexts/clockContext";
 
 /**
  *
@@ -7,18 +7,18 @@ import { useAnimationContext } from "../contexts/animationContext";
  */
 
 const SynchroClock = () => {
-    const animationContext = useAnimationContext();
+    const clockContext = useClockContext();
 
     function waitUntil(start: number, update: number, updatePeriod: number) {
         // set the clock once we have mounted this component, which will cascade through the app
-        animationContext.setCurrentTime(Date.now());
+        clockContext.setTime(Date.now());
         const wait = 60000 + update - start;
         setTimeout(updateTime, wait, updatePeriod);
     }
 
     function updateTime(updatePeriod: number) {
-        animationContext.setCurrentTime(Date.now());
-        setInterval(() => animationContext.setCurrentTime(Date.now()), updatePeriod);
+        clockContext.setTime(Date.now());
+        setInterval(() => clockContext.setTime(Date.now()), updatePeriod);
     }
 
     useEffect(() => {
