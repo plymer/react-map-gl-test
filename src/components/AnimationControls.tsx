@@ -3,13 +3,11 @@ import { ButtonGroup, ButtonToolbar, ProgressBar, Stack, Form } from "react-boot
 
 import AnimationControlButton from "./AnimationControlButton";
 import { useAnimationContext } from "../contexts/animationContext";
-import { useClockContext } from "../contexts/clockContext";
 import { ANIM_CONTROLS } from "../utilities/constants";
 import { makeISOTimeStamp } from "../utilities/GeoMetSetup";
 
 const AnimationControls = () => {
   const animationContext = useAnimationContext();
-  const clockContext = useClockContext();
 
   const [startTime, setStartTime] = useState(makeISOTimeStamp(animationContext.startTime, "display"));
   const [endTime, setEndTime] = useState(makeISOTimeStamp(animationContext.endTime, "display"));
@@ -19,12 +17,18 @@ const AnimationControls = () => {
   useEffect(() => {
     setStartTime(makeISOTimeStamp(animationContext.startTime, "display"));
     setEndTime(makeISOTimeStamp(animationContext.endTime, "display"));
-  }, [clockContext.time]);
+
+    // console.log(
+    //   makeISOTimeStamp(animationContext.startTime, "display"),
+    //   makeISOTimeStamp(animationContext.endTime, "display")
+    // );
+  }, [animationContext]);
 
   useEffect(() => {
-    // milliseconds per frame
+    // calculate the milliseconds per frame
+    // if wwe are on the last frame, hold for 3 seconds before starting the loop again
     const delay: number =
-      animationContext.currentFrame === animationContext.frameCount - 1 ? 2000 : 1000 / animationContext.frameRate;
+      animationContext.currentFrame === animationContext.frameCount - 1 ? 3000 : 1000 / animationContext.frameRate;
 
     if (playClicked) {
       setLoopID(setInterval(() => setFrameTo(animationContext.currentFrame, 1), delay));
@@ -36,6 +40,14 @@ const AnimationControls = () => {
       clearInterval(loopID);
     };
   }, [playClicked, animationContext.currentFrame]);
+
+  useEffect(() => {
+    if (animationContext.animationState === false) {
+      setPlayClicked(false);
+      clearInterval(loopID);
+      setFrameTo(animationContext.currentFrame);
+    }
+  }, [animationContext.animationState]);
 
   /**
    * helper function to handle the logic for looping through the animation
@@ -105,7 +117,7 @@ const AnimationControls = () => {
           <span key="end">{endTime}</span>
         </Stack>
 
-        <ProgressBar striped variant="primary" className="m-2" now={animationProgress} />
+        <ProgressBar striped variant="primary" className="m-2" now={animationProgress} animated={false} />
 
         <ButtonToolbar className="d-flex justify-content-between mx-2 mb-2">
           <ButtonGroup>

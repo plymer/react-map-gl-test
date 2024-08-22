@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import type { RasterLayer, RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
-import { useClockContext } from "../contexts/clockContext";
 import { useAnimationContext } from "../contexts/animationContext";
 
 import { LayerDetails } from "../utilities/types";
-import { GEOMET_GETMAP } from "../utilities/constants";
+import { GEOMET_GETMAP, GOES_EAST_BOUNDS, GOES_WEST_BOUNDS } from "../utilities/constants";
 
 import useSatellite from "../hooks/useSatellite";
+import { useSatelliteContext } from "../contexts/satelliteContext";
 
 interface Props {
   satellite: "GOES-West" | "GOES-East";
@@ -17,11 +17,11 @@ interface Props {
 
 const SatelliteLayer = ({ satellite, subProduct }: Props) => {
   const animationContext = useAnimationContext();
-  const clockContext = useClockContext();
+  const satelliteContext = useSatelliteContext();
 
   const [layerInfo, setLayerInfo] = useState<LayerDetails>();
 
-  const { data: timeData, isSuccess, isRefetching } = useSatellite(satellite, subProduct);
+  const { data: timeData, fetchStatus, refetch } = useSatellite(satellite, subProduct);
 
   const updateTimes = (times: LayerDetails) => {
     setLayerInfo(times);
@@ -29,15 +29,15 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
     animationContext.setStartTime(times.timeStart);
   };
 
+  // this effect will update the satellite data whenever the data is refetched
   useEffect(() => {
     if (timeData) updateTimes(timeData);
-  }, []);
+  }, [fetchStatus]);
 
+  // this effect is called whenever the subproduct changes from user input
   useEffect(() => {
-    if (timeData) updateTimes(timeData);
-  }, [clockContext.time]);
-
-  // HOLY SHIT THIS ACTUALLY WORKS
+    refetch();
+  }, [satelliteContext]);
 
   const tileURL = layerInfo?.urls[animationContext.currentFrame];
 
@@ -45,19 +45,26 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
     type: "raster",
     tiles: [tileURL || GEOMET_GETMAP + satellite + "_" + subProduct],
     tileSize: 256,
-    bounds: satellite === "GOES-West" ? [-180, -90, -100, 90] : [-100, -90, 180, 90],
+    bounds: satellite === "GOES-West" ? GOES_WEST_BOUNDS : GOES_EAST_BOUNDS,
   };
 
   const layer: RasterLayer = {
     id: "layer-" + satellite,
     type: "raster",
-    paint: {},
+    paint: {
+      "raster-resampling": "linear",
+    },
     source: "source",
   };
 
+  // So, what if we made as many layers as there are time steps?
+  // We want to first render the layer that displays on map load, and then shadow-load the other layers in the background,
+  //    toggling on and off the layers as we animate. Data is cached this way, and there is no loading time for the actual animation.
+  // The only issue I forsee with that is the hundred or so HTTP requests sent to the server at one time....... :grimmace emoji:
+
   return (
     <>
-      <Source {...source}>
+      <Source {...source} key={"source_" + satellite + "_" + animationContext.currentFrame.toString()}>
         <Layer {...layer} beforeId="wateroutline" />
       </Source>
     </>

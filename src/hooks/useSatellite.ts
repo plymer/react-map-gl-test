@@ -35,6 +35,7 @@ const useSatellite = (satellite: string, subProduct: string) => {
   return useQuery({
     queryKey: [satellite],
     queryFn: parseTimeDetails,
+    refetchInterval: 1 * 60 * 1000,
   });
 };
 
