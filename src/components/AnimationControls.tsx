@@ -111,23 +111,23 @@ const AnimationControls = () => {
 
   return (
     <>
-      <Stack direction="vertical">
-        <Stack className="d-flex justify-content-between mx-2 mt-2" direction="horizontal">
+      <Stack direction="vertical" className="mx-2">
+        <Stack className="d-flex justify-content-between" direction="horizontal">
           <span key="start">{startTime}</span>
           <span key="end">{endTime}</span>
         </Stack>
 
-        <ProgressBar striped variant="primary" className="m-2" now={animationProgress} animated={false} />
+        <ProgressBar striped variant="primary" className="my-2" now={animationProgress} animated={false} />
 
-        <ButtonToolbar className="d-flex justify-content-between mx-2 mb-2">
+        <ButtonToolbar className="d-flex justify-content-between mb-2">
           <ButtonGroup>
             {ANIM_CONTROLS.map((c) => (
               <AnimationControlButton key={c} type={c} onClick={() => handleClick(c)} />
             ))}
           </ButtonGroup>
 
-          <Stack direction="horizontal">
-            <Form.Label className="mx-2 text-center">FPS:</Form.Label>
+          <Stack direction="horizontal" className="ms-2">
+            <Form.Label>FPS:</Form.Label>
             <Form.Control
               max={8}
               min={3}

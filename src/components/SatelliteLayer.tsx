@@ -51,9 +51,7 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
   const layer: RasterLayer = {
     id: "layer-" + satellite,
     type: "raster",
-    paint: {
-      "raster-resampling": "linear",
-    },
+    paint: {},
     source: "source",
   };
 

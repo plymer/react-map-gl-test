@@ -1,12 +1,13 @@
 import { SATELLITE_CHANNELS } from "../utilities/constants";
 
 import { useSatelliteContext } from "../contexts/satelliteContext";
+import { Stack } from "react-bootstrap";
 
 const SatChannelSelector = () => {
   const satelliteContext = useSatelliteContext();
 
   return (
-    <>
+    <Stack direction="vertical" className="d-flex align-items-center me-2">
       <label htmlFor="satchannelselector">Satellite Channel:</label>
       <select
         id="satchannelselector"
@@ -19,7 +20,7 @@ const SatChannelSelector = () => {
           </option>
         ))}
       </select>
-    </>
+    </Stack>
   );
 };
 

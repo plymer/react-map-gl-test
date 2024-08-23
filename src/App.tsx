@@ -1,7 +1,7 @@
 // 3rd party libraries
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
+import { useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import Map from "react-map-gl/maplibre";
 import { AttributionControl } from "react-map-gl";
@@ -22,7 +22,7 @@ import { View } from "./utilities/types";
 import { MAP_BOUNDS, MAP_STYLE_URL, MAP_TILE_CACHE_SIZE } from "./utilities/constants";
 
 // contexts
-import { AnimationContextProvider, useAnimationContext } from "./contexts/animationContext";
+import { useAnimationContext } from "./contexts/animationContext";
 import { ClockContextProvider } from "./contexts/clockContext";
 
 import { useSatelliteContext } from "./contexts/satelliteContext";
@@ -36,7 +36,7 @@ function App() {
 
   const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
 
-  const { data: mapStyle, fetchStatus: styleFetch } = useQuery({
+  const { data: mapStyle, isSuccess } = useQuery({
     queryKey: ["mapStyle"],
     queryFn: getStyle,
   });
@@ -49,23 +49,6 @@ function App() {
     <>
       <ClockContextProvider>
         <SynchroClock />
-        {styleFetch == "fetching" ? (
-          <div
-            style={{
-              width: "100vw",
-              height: "100vh",
-              position: "absolute",
-              zIndex: 9999,
-              background: "#111",
-              color: "#fff",
-            }}
-          >
-            <h1>Loading Map...</h1>
-            <Spinner role="status" animation="border" />
-          </div>
-        ) : (
-          ""
-        )}
         <Map
           maxTileCacheSize={MAP_TILE_CACHE_SIZE}
           initialViewState={{
@@ -99,13 +82,10 @@ function App() {
           }
           onMove={
             /* update our map-center lat-lon whenever we move the map view */
-            (e) => {
-              animationContext.setAnimationState(false);
-              setCoords([e.viewState.longitude, e.viewState.latitude]);
-            }
+            (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
           }
         >
-          {styleFetch == "idle" ? (
+          {isSuccess ? (
             <>
               <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
               <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
