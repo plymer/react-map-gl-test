@@ -50,12 +50,13 @@ function App() {
       <ClockContextProvider>
         <SynchroClock />
         <Map
-          maxTileCacheSize={MAP_TILE_CACHE_SIZE}
+          // maxTileCacheSize={MAP_TILE_CACHE_SIZE}
           initialViewState={{
             longitude: defaultView.lon,
             latitude: defaultView.lat,
             zoom: defaultView.zoom,
           }}
+          maxParallelImageRequests={128 /* this VASTLY improves loading performance */}
           attributionControl={false}
           dragRotate={false}
           pitchWithRotate={false}
