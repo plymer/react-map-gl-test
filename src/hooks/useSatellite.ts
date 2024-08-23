@@ -13,6 +13,8 @@ const useSatellite = (satellite: string, subProduct: string) => {
   const getTimeInfo = () =>
     axios.get<string>(GEOMET_GETCAPABILITIES + satellite + "_" + subProduct).then((response) => response.data);
 
+  // TODO:: we need to find a way to synchronize the timesteps in case the layers are mismatched (sometimes GOES-East data is 1 step ahead of WEST)
+
   // this function will handle the remainder of the parsing and creating of times and is called by react-query
   const parseTimeDetails = async () => {
     const data = await getTimeInfo();
