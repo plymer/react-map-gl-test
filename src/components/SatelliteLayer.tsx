@@ -62,7 +62,7 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
 
   return (
     <>
-      <Source {...source} key={"source_" + satellite + "_" + animationContext.currentFrame.toString()}>
+      <Source {...source} key={"source_" + satellite}>
         <Layer {...layer} beforeId="wateroutline" />
       </Source>
     </>
