@@ -41,10 +41,16 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
 
     const tileURL = layerInfo?.urls[animationContext.currentFrame];
 
+    // const source: RasterSource = {
+    //     type: "raster",
+    //     tiles: [tileURL || GEOMET_GETMAP + satellite + "_" + subProduct],
+    //     // tiles: [GEOMET_GETMAP + "GOES-West" + "_" + subProduct, GEOMET_GETMAP + "GOES-East" + "_" + subProduct],
+    //     tileSize: 256,
+    //     bounds: satellite === "GOES-West" ? GOES_WEST_BOUNDS : GOES_EAST_BOUNDS,
+    // };
+
     const source: RasterSource = {
         type: "raster",
-        tiles: [tileURL || GEOMET_GETMAP + satellite + "_" + subProduct],
-        // tiles: [GEOMET_GETMAP + "GOES-West" + "_" + subProduct, GEOMET_GETMAP + "GOES-East" + "_" + subProduct],
         tileSize: 256,
         bounds: satellite === "GOES-West" ? GOES_WEST_BOUNDS : GOES_EAST_BOUNDS,
     };
@@ -56,18 +62,18 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
         source: "source",
     };
 
+    // layerInfo?.urls.map((u) => console.log(u));
+
     // So, what if we made as many layers as there are time steps?
     // We want to first render the layer that displays on map load, and then shadow-load the other layers in the background,
     //    toggling on and off the layers as we animate. Data is cached this way, and there is no loading time for the actual animation.
     // The only issue I forsee with that is the hundred or so HTTP requests sent to the server at one time....... :grimmace emoji:
 
-    return (
-        <>
-            <Source {...source} key={"source_" + satellite}>
-                <Layer {...layer} beforeId="wateroutline" />
-            </Source>
-        </>
-    );
+    return layerInfo?.urls.map((u, index) => (
+        <Source {...source} key={index} tiles={[u]}>
+            <Layer {...layer} beforeId="wateroutline" />
+        </Source>
+    ));
 };
 
 export default SatelliteLayer;
