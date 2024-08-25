@@ -3,6 +3,7 @@ import { MdFirstPage, MdLastPage, MdNavigateBefore, MdNavigateNext, MdPause, MdP
 
 interface Props {
     onClick: () => void;
+
     type: string;
 }
 
