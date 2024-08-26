@@ -2,30 +2,23 @@ import { useEffect, useState } from "react";
 import { ButtonGroup, ButtonToolbar, ProgressBar, Stack, Form } from "react-bootstrap";
 
 import AnimationControlButton from "./AnimationControlButton";
-import { useAnimationContext } from "../contexts/animationContext";
-import { delegateKeyDown, getNewFrame, ANIM_CONTROLS } from "../utilities/animationHandler";
-import { makeISOTimeStamp } from "../utilities/GeoMetSetup";
+import { useAnimationContext } from "../../contexts/animationContext";
+import { delegateKeyDown, getNewFrame, ANIM_CONTROLS } from "../../utilities/animationHandler";
+import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
 
 const AnimationControls = () => {
     const animationContext = useAnimationContext();
 
+    const [startTime, setStartTime] = useState(makeISOTimeStamp(animationContext.startTime, "display"));
+    const [endTime, setEndTime] = useState(makeISOTimeStamp(animationContext.endTime, "display"));
+    const [loopID, setLoopID] = useState<number>();
+
     // set up the event listener to handle keyboard input for animation controls
     useEffect(() => {
         window.addEventListener("keydown", (e) => {
-            delegateKeyDown(e, animationContext);
+            handleClick(delegateKeyDown(e));
         });
-
-        return () => {
-            window.removeEventListener("keydown", (e) => {
-                delegateKeyDown(e, animationContext);
-            });
-        };
     }, []);
-
-    const [startTime, setStartTime] = useState(makeISOTimeStamp(animationContext.startTime, "display"));
-    const [endTime, setEndTime] = useState(makeISOTimeStamp(animationContext.endTime, "display"));
-    const [playClicked, setPlayClicked] = useState<boolean>(false);
-    const [loopID, setLoopID] = useState<number>();
 
     useEffect(() => {
         setStartTime(makeISOTimeStamp(animationContext.startTime, "display"));
@@ -37,7 +30,7 @@ const AnimationControls = () => {
         // if wwe are on the last frame, hold for 3 seconds before starting the loop again
         const delay: number = animationContext.currentFrame === animationContext.frameCount - 1 ? 3000 : 1000 / animationContext.frameRate;
 
-        if (playClicked) {
+        if (animationContext.animationState === true) {
             setLoopID(setInterval(() => animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, animationContext.currentFrame, 1)), delay));
         } else {
             clearInterval(loopID);
@@ -46,11 +39,10 @@ const AnimationControls = () => {
         return () => {
             clearInterval(loopID);
         };
-    }, [playClicked, animationContext.currentFrame]);
+    }, [animationContext.animationState, animationContext.currentFrame]);
 
     useEffect(() => {
         if (animationContext.animationState === false) {
-            setPlayClicked(false);
             clearInterval(loopID);
             animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, animationContext.currentFrame));
         }
@@ -61,12 +53,14 @@ const AnimationControls = () => {
      * @param control the string passed as the command for the animation
      */
     const handleClick = (control: string) => {
+        // in strict mode, MOUSE CLICKS generate ONE console.log, KEYBOARD input generates TWO
+        console.log(control);
         switch (control) {
             case "play-pause":
-                if (playClicked) {
-                    setPlayClicked(false);
+                if (animationContext.animationState === true) {
+                    animationContext.setAnimationState(false);
                 } else {
-                    setPlayClicked(true);
+                    animationContext.setAnimationState(true);
                 }
 
                 break;
@@ -110,6 +104,7 @@ const AnimationControls = () => {
                         {ANIM_CONTROLS.map((c) => (
                             <AnimationControlButton key={c} type={c} onClick={() => handleClick(c)} />
                         ))}
+                        <div>{animationContext.currentFrame}</div>
                     </ButtonGroup>
 
                     <Stack direction="horizontal" className="ms-2">

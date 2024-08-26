@@ -1,7 +1,6 @@
 // 3rd party libraries
 import axios from "axios";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Map from "react-map-gl/maplibre";
 import { AttributionControl } from "react-map-gl";
@@ -12,21 +11,18 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "./App.css";
 
 // components
-import MapStatusBar from "./components/MapStatusBar";
-import SatelliteLayer from "./components/SatelliteLayer";
-import MapControlsBar from "./components/MapControlsBar";
+import SatelliteLayer from "./components/data-layers/SatelliteLayer";
+import MapStatusBar from "./components/ui/MapStatusBar";
+import MapControlsBar from "./components/ui/MapControlsBar";
 import SynchroClock from "./components/SynchroClock";
 
 // helpers
 import { View } from "./utilities/types";
-// import { MAP_BOUNDS, MAP_STYLE_URL, MAP_TILE_CACHE_SIZE } from "./utilities/constants";
-
 import { MAP_BOUNDS, MAP_STYLE_URL } from "./utilities/constants";
-import { delegateKeyDown } from "./utilities/animationHandler";
+
 // contexts
 // import { useAnimationContext } from "./contexts/animationContext";
 import { ClockContextProvider } from "./contexts/clockContext";
-
 import { useSatelliteContext } from "./contexts/satelliteContext";
 
 // set the default values for the map centre and the zoom level
@@ -44,7 +40,6 @@ function App() {
     });
 
     const [isLoading, setIsLoading] = useState(false);
-    // const [mapStyleLoaded, setMapStyleLoaded] = useState(false);
     const [coords, setCoords] = useState<number[]>();
 
     return (
@@ -52,7 +47,6 @@ function App() {
             <ClockContextProvider>
                 <SynchroClock />
                 <Map
-                    // maxTileCacheSize={MAP_TILE_CACHE_SIZE}
                     initialViewState={{
                         longitude: defaultView.lon,
                         latitude: defaultView.lat,
@@ -88,15 +82,9 @@ function App() {
                         (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
                     }
                 >
-                    {isSuccess ? (
-                        <>
-                            <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
-                            <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
-                        </>
-                    ) : (
-                        ""
-                    )}
-                    {/* <ScaleControl position="bottom-right" /> */}
+                    <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
+                    <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
+
                     <AttributionControl compact position="top-right" />
                 </Map>
                 <MapStatusBar center={coords} loadState={isLoading} />
