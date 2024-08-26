@@ -29,8 +29,6 @@ const useSatellite = (satellite: string, subProduct: string) => {
 
     const output = { ...details, urls: productURLs };
 
-    // console.log(output);
-
     return output as LayerDetails;
   };
 

@@ -121,6 +121,9 @@ const AnimationControls = () => {
     setEndTime(makeISOTimeStamp(animation.endTime, "display"));
   }, [animation]);
 
+  /**
+   * create a setInterval that will be applied or removed as necessary depending on the animation state that the user has chosen
+   */
   useEffect(() => {
     // calculate the milliseconds per frame
     // if wwe are on the last frame, hold for 3 seconds before starting the loop again
@@ -166,8 +169,7 @@ const AnimationControls = () => {
    * @param control the string passed as the command for the animation
    */
   const handleClick = (control: string) => {
-    // in strict mode, MOUSE CLICKS generate ONE console.log, KEYBOARD input generates TWO
-    console.log(control);
+    // we don't need to translate any input so just pass the command string
     doAnimateCommand(control);
   };
 
@@ -181,6 +183,7 @@ const AnimationControls = () => {
           <span key="end">{endTime}</span>
         </Stack>
 
+        {/* this needs to be interactable/clickable and likely would benefit from a custom <Range> component */}
         <ProgressBar striped variant="primary" className="my-2" now={animationProgress} animated={false} />
 
         <ButtonToolbar className="d-flex justify-content-between mb-2">
