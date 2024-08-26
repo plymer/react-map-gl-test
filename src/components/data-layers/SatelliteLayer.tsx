@@ -20,6 +20,7 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
 
   const [layerInfo, setLayerInfo] = useState<LayerDetails>();
   const [activeIndex, setActiveIndex] = useState<number>(animation.currentFrame);
+  const [hasLooped, setHasLooped] = useState<boolean>(false);
 
   const { data: timeData, fetchStatus, refetch } = useSatellite(satellite, subProduct);
 
@@ -49,21 +50,29 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
     bounds: satellite === "GOES-West" ? GOES_WEST_BOUNDS : GOES_EAST_BOUNDS,
   };
 
-  return layerInfo?.urls.map((u, index) => (
-    //   console.log("opacity:", checkOpacity(index)),
-    <Source {...source} key={index} tiles={[u] || GEOMET_GETMAP + satellite + "_" + subProduct}>
-      <Layer
-        type="raster"
-        source="source"
-        id={"layer-" + satellite + index}
-        beforeId="wateroutline"
-        paint={{
-          "raster-fade-duration": 0,
-          "raster-opacity": index <= activeIndex ? 1 : 0,
-        }}
-      />
-    </Source>
-  ));
+  const currentTiles = layerInfo?.urls[animation.currentFrame];
+
+  return animation.animationState === false && hasLooped === false
+    ? (setHasLooped(true),
+      (
+        <Source {...source} key={satellite} tiles={[currentTiles || GEOMET_GETMAP + satellite + "_" + subProduct]}>
+          <Layer type="raster" source="source" id={"layer-" + satellite} beforeId="wateroutline" paint={{}} />
+        </Source>
+      ))
+    : layerInfo?.urls.map((u, index) => (
+        <Source {...source} key={index} tiles={[u]}>
+          <Layer
+            type="raster"
+            source="source"
+            id={"layer-" + satellite + index}
+            beforeId="wateroutline"
+            paint={{
+              "raster-fade-duration": 0, // this literally doesn't do anything
+              "raster-opacity": index === activeIndex || index === activeIndex - 1 || index === 0 ? 1 : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
+            }}
+          />
+        </Source>
+      ));
 };
 
 export default SatelliteLayer;

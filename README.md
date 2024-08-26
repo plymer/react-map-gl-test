@@ -17,8 +17,8 @@ August 14, 2024
 - [x] Initial animation capabilities (controls + frame rate)
 - [x] Enable Tanstack Query aka React-Query data refetch (re-querying data every 60 seconds)
 - [x] Add additional options for satellite imagery selection
-- [ ] Fix caching of images (needs more investigation on how to capture tiles, and how to clear the cache)
-  - The caching behaviour could be built into the minutely-refetch logic if we can figure it out
+- [x] Fix caching of images for satellite loop
+  - [ ] Add progressive / regressive features that only load animation frames when animating, otherwise, only load single layers of the data and keep it up to date
 - [ ] Synchronize the timesteps available in the satellite layers
 - [ ] Add Bedpost GeoJSON
 - [ ] Add Radar from GeoMet

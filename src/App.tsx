@@ -64,14 +64,17 @@ function App() {
         onData={
           /* while data is loading, set our loading flag to 'on' */
           () => {
-            // console.log(e.target.areTilesLoaded());
+            // console.log(e.dataType, e.originalEvent, e.target.areTilesLoaded());
             // console.log("tiles loaded:");
             setIsLoading(true);
           }
         }
         onIdle={
           /* while nothing is happening in the map, set our loading flag to 'off' */
-          () => setIsLoading(false)
+          () => {
+            // console.log(e.target.getLayersOrder());
+            setIsLoading(false);
+          }
         }
         onMove={
           /* update our map-center lat-lon whenever we move the map view */
