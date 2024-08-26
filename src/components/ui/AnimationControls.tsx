@@ -79,6 +79,7 @@ const AnimationControls = () => {
    * @returns a string that can be used by the doAnimateCommand method to change the animation state and timestep
    */
   const translateKeyboardInput = (code: string) => {
+    // console.log(code);
     switch (code) {
       case "Space":
         return animation.animationState === false ? "play" : "pause";
@@ -86,6 +87,10 @@ const AnimationControls = () => {
         return "prev";
       case "Period":
         return "next";
+      case "Slash":
+        return "first";
+      case "KeyM":
+        return "last";
       default:
         return "";
     }
@@ -96,6 +101,7 @@ const AnimationControls = () => {
    */
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {
+      event.code === "Slash" ? event.preventDefault() : "";
       const translated = translateKeyboardInput(event.code);
       translated != "" ? doAnimateCommand(translated) : "";
     },
@@ -126,8 +132,8 @@ const AnimationControls = () => {
    */
   useEffect(() => {
     // calculate the milliseconds per frame
-    // if wwe are on the last frame, hold for 3 seconds before starting the loop again
-    const delay: number = animation.currentFrame === animation.frameCount - 1 ? 3000 : 1000 / animation.frameRate;
+    // if wwe are on the last frame, hold for 2 seconds before starting the loop again
+    const delay: number = animation.currentFrame === animation.frameCount - 1 ? 2000 : 1000 / animation.frameRate;
 
     if (animation.animationState === true) {
       setLoopID(
@@ -192,8 +198,8 @@ const AnimationControls = () => {
           <Stack direction="horizontal" className="ms-2">
             <Form.Label className="me-2">FPS:</Form.Label>
             <Form.Control
-              max={8}
-              min={3}
+              max={10}
+              min={2}
               defaultValue={animation.frameRate}
               type="number"
               onChange={(e) => animation.setFrameRate(parseInt(e.target.value))}
