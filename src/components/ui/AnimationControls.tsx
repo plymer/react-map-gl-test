@@ -7,10 +7,10 @@ import { useAnimationContext } from "../../contexts/animationContext";
 import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
 
 const AnimationControls = () => {
-  const animationContext = useAnimationContext();
+  const animation = useAnimationContext();
 
-  const [startTime, setStartTime] = useState(makeISOTimeStamp(animationContext.startTime, "display"));
-  const [endTime, setEndTime] = useState(makeISOTimeStamp(animationContext.endTime, "display"));
+  const [startTime, setStartTime] = useState(makeISOTimeStamp(animation.startTime, "display"));
+  const [endTime, setEndTime] = useState(makeISOTimeStamp(animation.endTime, "display"));
   const [loopID, setLoopID] = useState<number>();
 
   // type of buttons for controlling the animation
@@ -44,31 +44,31 @@ const AnimationControls = () => {
   const doAnimateCommand = (control: string) => {
     switch (control) {
       case "play":
-        animationContext.setAnimationState(true);
+        animation.setAnimationState(true);
         break;
 
       case "pause":
-        animationContext.setAnimationState(false);
+        animation.setAnimationState(false);
         break;
 
       case "next":
-        animationContext.setAnimationState(false);
-        animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, animationContext.currentFrame, 1));
+        animation.setAnimationState(false);
+        animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.currentFrame, 1));
         break;
 
       case "prev":
-        animationContext.setAnimationState(false);
-        animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, animationContext.currentFrame, -1));
+        animation.setAnimationState(false);
+        animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.currentFrame, -1));
         break;
 
       case "first":
-        animationContext.setAnimationState(false);
-        animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, animationContext.frameCount - 1));
+        animation.setAnimationState(false);
+        animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.frameCount - 1));
         break;
 
       case "last":
-        animationContext.setAnimationState(false);
-        animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, 0));
+        animation.setAnimationState(false);
+        animation.setCurrentFrame(getNewFrame(animation.frameCount, 0));
         break;
     }
   };
@@ -81,7 +81,7 @@ const AnimationControls = () => {
   const translateKeyboardInput = (code: string) => {
     switch (code) {
       case "Space":
-        return animationContext.animationState === false ? "play" : "pause";
+        return animation.animationState === false ? "play" : "pause";
       case "Comma":
         return "prev";
       case "Period":
@@ -99,7 +99,7 @@ const AnimationControls = () => {
       const translated = translateKeyboardInput(event.code);
       translated != "" ? doAnimateCommand(translated) : "";
     },
-    [animationContext.currentFrame, animationContext.animationState]
+    [animation.currentFrame, animation.animationState]
   );
 
   /**
@@ -117,23 +117,19 @@ const AnimationControls = () => {
    * updates our start and end times every time the data updates
    */
   useEffect(() => {
-    setStartTime(makeISOTimeStamp(animationContext.startTime, "display"));
-    setEndTime(makeISOTimeStamp(animationContext.endTime, "display"));
-  }, [animationContext]);
+    setStartTime(makeISOTimeStamp(animation.startTime, "display"));
+    setEndTime(makeISOTimeStamp(animation.endTime, "display"));
+  }, [animation]);
 
   useEffect(() => {
     // calculate the milliseconds per frame
     // if wwe are on the last frame, hold for 3 seconds before starting the loop again
-    const delay: number =
-      animationContext.currentFrame === animationContext.frameCount - 1 ? 3000 : 1000 / animationContext.frameRate;
+    const delay: number = animation.currentFrame === animation.frameCount - 1 ? 3000 : 1000 / animation.frameRate;
 
-    if (animationContext.animationState === true) {
+    if (animation.animationState === true) {
       setLoopID(
         setInterval(
-          () =>
-            animationContext.setCurrentFrame(
-              getNewFrame(animationContext.frameCount, animationContext.currentFrame, 1)
-            ),
+          () => animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.currentFrame, 1)),
           delay
         )
       );
@@ -144,22 +140,21 @@ const AnimationControls = () => {
     return () => {
       clearInterval(loopID);
     };
-  }, [animationContext.animationState, animationContext.currentFrame]);
+  }, [animation.animationState, animation.currentFrame]);
 
-  useEffect(() => {
-    if (animationContext.animationState === false) {
-      clearInterval(loopID);
-      animationContext.setCurrentFrame(getNewFrame(animationContext.frameCount, animationContext.currentFrame));
-    }
-  }, [animationContext.animationState]);
-
+  /**
+   * Builds a button for each command that is available for the animating of the map
+   * @param command the command that will be passed on to the function that actually controls the animation and frame shown on the map display
+   * @param index integer used to key the JSX element passed from the .map() function
+   * @returns a JSX button element with all of the props needed to allow the user to control the map animation
+   */
   const buildButton = (command: string, index: number) => {
     var button: JSX.Element = (
       <AnimationControlButton key={index} type={command} onClick={() => handleClick(command)} />
     );
-    if (command === "play" && animationContext.animationState === true) {
+    if (command === "play" && animation.animationState === true) {
       return "";
-    } else if (command === "pause" && animationContext.animationState === false) {
+    } else if (command === "pause" && animation.animationState === false) {
       return "";
     } else {
       return button;
@@ -176,7 +171,7 @@ const AnimationControls = () => {
     doAnimateCommand(control);
   };
 
-  const animationProgress = (animationContext.currentFrame / (animationContext.frameCount - 1)) * 100;
+  const animationProgress = (animation.currentFrame / (animation.frameCount - 1)) * 100;
 
   return (
     <>
@@ -189,19 +184,16 @@ const AnimationControls = () => {
         <ProgressBar striped variant="primary" className="my-2" now={animationProgress} animated={false} />
 
         <ButtonToolbar className="d-flex justify-content-between mb-2">
-          <ButtonGroup>
-            {ANIM_CONTROLS.map((c, index) => buildButton(c, index))}
-            <div>{animationContext.currentFrame}</div>
-          </ButtonGroup>
+          <ButtonGroup>{ANIM_CONTROLS.map((c, index) => buildButton(c, index))}</ButtonGroup>
 
           <Stack direction="horizontal" className="ms-2">
-            <Form.Label>FPS:</Form.Label>
+            <Form.Label className="me-2">FPS:</Form.Label>
             <Form.Control
               max={8}
               min={3}
-              defaultValue={animationContext.frameRate}
+              defaultValue={animation.frameRate}
               type="number"
-              onChange={(e) => animationContext.setFrameRate(parseInt(e.target.value))}
+              onChange={(e) => animation.setFrameRate(parseInt(e.target.value))}
             />
           </Stack>
         </ButtonToolbar>

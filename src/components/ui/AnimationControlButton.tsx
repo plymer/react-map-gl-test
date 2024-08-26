@@ -3,7 +3,6 @@ import { MdFirstPage, MdLastPage, MdNavigateBefore, MdNavigateNext, MdPause, MdP
 
 interface Props {
   onClick: () => void;
-
   type: string;
 }
 
@@ -13,8 +12,8 @@ const AnimationControlButton = ({ onClick, type }: Props) => {
       <Button id={type} onClick={onClick}>
         {type === "last" ? <MdFirstPage /> : ""}
         {type === "prev" ? <MdNavigateBefore /> : ""}
-        {type === "play" ? <MdPlayArrow /> : null}
-        {type === "pause" ? <MdPause /> : null}
+        {type === "play" ? <MdPlayArrow /> : ""}
+        {type === "pause" ? <MdPause /> : ""}
         {type === "next" ? <MdNavigateNext /> : ""}
         {type === "first" ? <MdLastPage /> : ""}
         <span className="visually-hidden">{type} Frame</span>

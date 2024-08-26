@@ -29,69 +29,69 @@ import { useSatelliteContext } from "./contexts/satelliteContext";
 const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
 
 function App() {
-    const satelliteContext = useSatelliteContext();
-    // const animationContext = useAnimationContext();
+  const satelliteContext = useSatelliteContext();
+  // const animationContext = useAnimationContext();
 
-    const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
+  const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
 
-    const { data: mapStyle, isSuccess } = useQuery({
-        queryKey: ["mapStyle"],
-        queryFn: getStyle,
-    });
+  const { data: mapStyle } = useQuery({
+    queryKey: ["mapStyle"],
+    queryFn: getStyle,
+  });
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [coords, setCoords] = useState<number[]>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [coords, setCoords] = useState<number[]>();
 
-    return (
-        <>
-            <ClockContextProvider>
-                <SynchroClock />
-                <Map
-                    initialViewState={{
-                        longitude: defaultView.lon,
-                        latitude: defaultView.lat,
-                        zoom: defaultView.zoom,
-                    }}
-                    maxParallelImageRequests={128 /* this VASTLY improves loading performance */}
-                    attributionControl={false}
-                    dragRotate={false}
-                    pitchWithRotate={false}
-                    touchPitch={false}
-                    boxZoom={false}
-                    maxBounds={MAP_BOUNDS}
-                    style={{ width: "100%", height: "100vh" }}
-                    mapStyle={mapStyle}
-                    onLoad={
-                        /* populate the map centre coords with the default values */
-                        () => setCoords([defaultView.lon, defaultView.lat])
-                    }
-                    onData={
-                        /* while data is loading, set our loading flag to 'on' */
-                        () => {
-                            // console.log(e.target.areTilesLoaded());
-                            // console.log("tiles loaded:");
-                            setIsLoading(true);
-                        }
-                    }
-                    onIdle={
-                        /* while nothing is happening in the map, set our loading flag to 'off' */
-                        () => setIsLoading(false)
-                    }
-                    onMove={
-                        /* update our map-center lat-lon whenever we move the map view */
-                        (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
-                    }
-                >
-                    <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
-                    <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
+  return (
+    <>
+      <ClockContextProvider>
+        <SynchroClock />
+        <Map
+          initialViewState={{
+            longitude: defaultView.lon,
+            latitude: defaultView.lat,
+            zoom: defaultView.zoom,
+          }}
+          maxParallelImageRequests={128 /* this VASTLY improves loading performance */}
+          attributionControl={false}
+          dragRotate={false}
+          pitchWithRotate={false}
+          touchPitch={false}
+          boxZoom={false}
+          maxBounds={MAP_BOUNDS}
+          style={{ width: "100%", height: "100vh" }}
+          mapStyle={mapStyle}
+          onLoad={
+            /* populate the map centre coords with the default values */
+            () => setCoords([defaultView.lon, defaultView.lat])
+          }
+          onData={
+            /* while data is loading, set our loading flag to 'on' */
+            () => {
+              // console.log(e.target.areTilesLoaded());
+              // console.log("tiles loaded:");
+              setIsLoading(true);
+            }
+          }
+          onIdle={
+            /* while nothing is happening in the map, set our loading flag to 'off' */
+            () => setIsLoading(false)
+          }
+          onMove={
+            /* update our map-center lat-lon whenever we move the map view */
+            (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
+          }
+        >
+          <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
+          <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
 
-                    <AttributionControl compact position="top-right" />
-                </Map>
-                <MapStatusBar center={coords} loadState={isLoading} />
-                <MapControlsBar />
-            </ClockContextProvider>
-        </>
-    );
+          <AttributionControl compact position="top-right" />
+        </Map>
+        <MapStatusBar center={coords} loadState={isLoading} />
+        <MapControlsBar />
+      </ClockContextProvider>
+    </>
+  );
 }
 
 export default App;
