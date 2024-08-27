@@ -48,7 +48,7 @@ function App() {
           latitude: defaultView.lat,
           zoom: defaultView.zoom,
         }}
-        maxParallelImageRequests={128}
+        // maxParallelImageRequests={128}
         attributionControl={false}
         dragRotate={false}
         pitchWithRotate={false}
