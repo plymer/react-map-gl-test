@@ -28,73 +28,80 @@ import { useSatelliteContext } from "./contexts/satelliteContext";
 const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
 
 function App() {
-  const satelliteContext = useSatelliteContext();
+    const satelliteContext = useSatelliteContext();
 
-  const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
+    const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
 
-  const { data: mapStyle } = useQuery({
-    queryKey: ["mapStyle"],
-    queryFn: getStyle,
-  });
+    const { data: mapStyle, isSuccess: mapStyleLoaded } = useQuery({
+        queryKey: ["mapStyle"],
+        queryFn: getStyle,
+    });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [coords, setCoords] = useState<number[]>();
+    const [isLoading, setIsLoading] = useState(false);
+    const [coords, setCoords] = useState<number[]>();
 
-  return (
-    <>
-      <Map
-        initialViewState={{
-          longitude: defaultView.lon,
-          latitude: defaultView.lat,
-          zoom: defaultView.zoom,
-        }}
-        // maxParallelImageRequests={128}
-        attributionControl={false}
-        dragRotate={false}
-        pitchWithRotate={false}
-        touchPitch={false}
-        boxZoom={false}
-        maxBounds={MAP_BOUNDS}
-        style={{ width: "100%", height: "100vh" }}
-        mapStyle={mapStyle}
-        onLoad={
-          /* populate the map centre coords with the default values */
-          () => setCoords([defaultView.lon, defaultView.lat])
-        }
-        onData={
-          /* while data is loading, set our loading flag to 'on' */
-          () => {
-            // console.log(e.dataType, e.originalEvent, e.target.areTilesLoaded());
-            // console.log("tiles loaded:");
-            setIsLoading(true);
-          }
-        }
-        onIdle={
-          /* while nothing is happening in the map, set our loading flag to 'off' */
-          () => {
-            // console.log(e.target.getLayersOrder());
-            setIsLoading(false);
-          }
-        }
-        onMove={
-          /* update our map-center lat-lon whenever we move the map view */
-          (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
-        }
-      >
-        <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
-        <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
+    return (
+        <>
+            {
+                // make sure that the basemap is loaded first before we start adding data to the map
+                mapStyleLoaded ? (
+                    <Map
+                        initialViewState={{
+                            longitude: defaultView.lon,
+                            latitude: defaultView.lat,
+                            zoom: defaultView.zoom,
+                        }}
+                        // maxParallelImageRequests={128}
+                        attributionControl={false}
+                        dragRotate={false}
+                        pitchWithRotate={false}
+                        touchPitch={false}
+                        boxZoom={false}
+                        maxBounds={MAP_BOUNDS}
+                        style={{ width: "100%", height: "100vh" }}
+                        mapStyle={mapStyle}
+                        onLoad={
+                            /* populate the map centre coords with the default values */
+                            () => setCoords([defaultView.lon, defaultView.lat])
+                        }
+                        onData={
+                            /* while data is loading, set our loading flag to 'on' */
+                            () => {
+                                // console.log(e.dataType, e.originalEvent, e.target.areTilesLoaded());
+                                // console.log("tiles loaded:");
+                                setIsLoading(true);
+                            }
+                        }
+                        onIdle={
+                            /* while nothing is happening in the map, set our loading flag to 'off' */
+                            () => {
+                                // console.log(e.target.getLayersOrder());
+                                setIsLoading(false);
+                            }
+                        }
+                        onMove={
+                            /* update our map-center lat-lon whenever we move the map view */
+                            (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
+                        }
+                    >
+                        <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
+                        <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
 
-        <AttributionControl compact position="top-right" />
-      </Map>
+                        <AttributionControl compact position="top-right" />
+                    </Map>
+                ) : (
+                    <div style={{ position: "absolute", top: "50%", left: "50%" }}>Loading map data...</div>
+                )
+            }
 
-      <ClockContextProvider>
-        <SynchroClock />
-        <MapStatusBar center={coords} loadState={isLoading} />
-      </ClockContextProvider>
+            <ClockContextProvider>
+                <SynchroClock />
+                <MapStatusBar center={coords} loadState={isLoading} />
+            </ClockContextProvider>
 
-      <MapControlsBar />
-    </>
-  );
+            <MapControlsBar />
+        </>
+    );
 }
 
 export default App;

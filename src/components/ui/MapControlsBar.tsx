@@ -1,13 +1,12 @@
-import { Stack } from "react-bootstrap";
 import AnimationControls from "./AnimationControls";
 import SatChannelSelector from "./SatChannelSelector";
 
 const MapControlsBar = () => {
     return (
-        <Stack direction="horizontal" className="map-controls-bar map-ui border-round-tr">
+        <div className="absolute bottom-0 left-0 p-2 border-r border-b border-black bg-slate-900 text-white rounded-tr-lg">
             <AnimationControls />
             <SatChannelSelector />
-        </Stack>
+        </div>
     );
 };
 

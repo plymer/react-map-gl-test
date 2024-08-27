@@ -1,8 +1,10 @@
-import { Spinner, Stack } from "react-bootstrap";
-
 import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
 import { useClockContext } from "../../contexts/clockContext";
-import PositionIndicator from "./PositionIndicator";
+
+import { LoadingSpinner } from "./LoadingSpinner";
+
+import { FaGlobe } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa6";
 
 interface Props {
     center?: number[];
@@ -13,19 +15,25 @@ const MapStatusBar = ({ center, loadState }: Props) => {
     const clockContext = useClockContext();
 
     return (
-        <>
-            <Stack direction="horizontal" className="map-status shadow map-ui border-round-br">
-                {loadState ? (
-                    <Spinner animation="border" role="status" size="sm" className="mx-3">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                ) : (
-                    <div className="mx-4 "></div>
-                )}
-                <PositionIndicator coords={center} />
-                <span className="mx-4">{makeISOTimeStamp(clockContext.time, "display")}</span>
-            </Stack>
-        </>
+        <div className="absolute top-0 left-0 border-r border-b border-black bg-slate-900 text-white flex align-middle p-2 rounded-br-lg">
+            {loadState ? (
+                <LoadingSpinner className="w-6 h-6 inline-block border-t-slate-600 border-2 border-t-2" />
+            ) : (
+                <div className="w-6 h-6 inline-block"></div>
+            )}
+            <FaGlobe className="inline-block w-6 h-6 ms-2" />
+            {center ? (
+                <span className="mx-2 font-mono">
+                    {Math.abs(parseFloat(center[1].toFixed(2)))}
+                    {center[1] > 0 ? "°N" : "°S"} {Math.abs(parseFloat(center[0].toFixed(2)))}
+                    {center[0] > 0 ? "°E" : "°W"}
+                </span>
+            ) : (
+                ""
+            )}
+            <FaRegClock className="inline-block w-6 h-6 me-2" />
+            <span className="font-mono">{makeISOTimeStamp(clockContext.time, "display")}</span>
+        </div>
     );
 };
 

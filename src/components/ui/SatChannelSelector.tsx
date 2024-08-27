@@ -1,22 +1,28 @@
 import { SATELLITE_CHANNELS } from "../../utilities/constants";
 
 import { useSatelliteContext } from "../../contexts/satelliteContext";
-import { Stack } from "react-bootstrap";
 
 const SatChannelSelector = () => {
     const satelliteContext = useSatelliteContext();
 
     return (
-        <Stack direction="vertical" className="d-flex align-items-center me-2">
-            <label htmlFor="satchannelselector">Satellite Channel:</label>
-            <select id="satchannelselector" defaultValue={satelliteContext.subProduct} onChange={(e) => satelliteContext.setSubProduct(e.target.value)}>
+        <div>
+            <label className="me-2" htmlFor="satchannelselector">
+                Satellite Channel:
+            </label>
+            <select
+                id="satchannelselector"
+                defaultValue={satelliteContext.subProduct}
+                onChange={(e) => satelliteContext.setSubProduct(e.target.value)}
+                className="text-black rounded-sm"
+            >
                 {SATELLITE_CHANNELS.map((ch, index) => (
                     <option key={index} value={ch.wms}>
                         {ch.menuName}
                     </option>
                 ))}
             </select>
-        </Stack>
+        </div>
     );
 };
 
