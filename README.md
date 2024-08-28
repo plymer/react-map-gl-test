@@ -7,11 +7,13 @@ August 14, 2024
 
 ## Rationale for project:
 
-The current WxMap project deals with _stateful_ code structure, since the project is an interactive map with a user interface baked on top of it. The technology stack in use is basic, utilizing Javascript, CSS, and HTML in addition to a small amount of PHP for handling of server requests. Certain components of the stack are a part of the NodeJS ecosystem, which is an industry-standard asset system used for full-stack Web Development.
+The current WxMap project deals with _stateful_ code structure, since the project is an interactive map with a user interface baked on top of it. The technology stack in use is basic, utilizing Javascript, CSS, and HTML in addition to a small amount of PHP for handling of server requests. Certain components of the stack are a part of the NodeJS ecosystem, which is an industry-standard asset system used for full-stack Web Development. State management is being done in a rudimentary and complicated fashion and modern tools have overtaken native methods for doing so.
 
-My project here is a proof of concept / exploratory look at converting the work that has been done, utilizing it as a spiritual successor, and leaning fully into industry-standard methods and tools. Leveraging modern toolkits like React and TypeScript, we can build a more performant product to the user while also having an easily-maintained codebase that follows industry standards and best practices.
+My project here is a proof of concept / exploratory look at converting the work that has been done, utilizing it as a spiritual successor, and leaning fully into industry-standard methods and tools. Leveraging modern toolkits like React and TypeScript in an up-to-date technology stack, we can build a more performant product to the user while also having an easily-maintained codebase that follows industry standards and best practices.
 
 Despite the initial learning curve, the tools that exist within the React ecosystem such as Tanstack-Query and Axios remove an incredible amount of overhead for things like data fetching routines and error handling for example. Creating re-usable data and UI components with compartmentalized code structures will allow onboarding and maintaining the project to be quick and efficient. The amount of training, tutorials, and documentation that exists within this ecosystem should not be understated either.
+
+Another longer-term benefit for this project is that it initiates a modernization of the programming culture within CMAC-West while providing a relevant experience for any future Co-op students or interns looking to gain valuable work experience. The first iteration of the WxMap project was a good start, but this is the push that we need as an office.
 
 ## Progress:
 
