@@ -5,7 +5,15 @@
 Ryan Pimiskern
 August 14, 2024
 
-## To Do:
+## Rationale for project:
+
+The current WxMap project deals with _stateful_ code structure, since the project is an interactive map with a user interface baked on top of it. The technology stack in use is basic, utilizing Javascript, CSS, and HTML in addition to a small amount of PHP for handling of server requests. Certain components of the stack are a part of the NodeJS ecosystem, which is an industry-standard asset system used for full-stack Web Development.
+
+My project here is a proof of concept / exploratory look at converting the work that has been done, utilizing it as a spiritual successor, and leaning fully into industry-standard methods and tools. Leveraging modern toolkits like React and TypeScript, we can build a more performant product to the user while also having an easily-maintained codebase that follows industry standards and best practices.
+
+Despite the initial learning curve, the tools that exist within the React ecosystem such as Tanstack-Query and Axios remove an incredible amount of overhead for things like data fetching routines and error handling for example. Creating re-usable data and UI components with compartmentalized code structures will allow onboarding and maintaining the project to be quick and efficient. The amount of training, tutorials, and documentation that exists within this ecosystem should not be understated either.
+
+## Progress:
 
 - [x] Initialize map object
 - [x] Find open-source/unlimited map tiles
@@ -21,13 +29,24 @@ August 14, 2024
   - [ ] Add progressive / regressive features that only load animation frames when animating, otherwise, only load single layers of the data and keep it up to date
 - [ ] Synchronize the timesteps available in the satellite layers
 - [ ] Add Bedpost GeoJSON
+  - This will be added to the base map style layer so as not to require any extra processing
+  - There are performance gains by embedding this vector data into the TileJSON returned in the base map
 - [ ] Add Radar from GeoMet
+  - GeoMet data is in 6-minute bins, which will require us to normalize the data across the 10-minute bins that are used for
 - [ ] Add CLDN data from DMS
+  - In current WxMap implementation, DMS is queried and all lightning data is being handled by the **client**
+  - I am proposing and _strongly_ recommending that we move this DMS query/data formatting logic to the server
+    - I have created a Python script to perform parallel downloads of the lightning data from the store at `hubwx/data/shared/lightning/`, which then parses the lightning strikes into a GeoJSON Feature Collection which can be easily displayed on MapLibre/MapBox GL maps
 - [ ] Add surface observations (re-use as much drawing logic from exisiting WxMap project as possible)
-  - first iteration should just be a popup marker for each site in order to build some base geo-located point data (for re-use in Webcam project)
+
+  - First iteration should just be a popup marker for each site in order to build some base geo-located point data (for re-use in Webcam project)
+  - Later iteration question is, _"Do the surface observations need to have all of their elements rendered for previous time steps?"_
+    - This question is posed because reducing the amount of data retained and formatted would enhance performance
+    - I also question the need since if a user is interested in a timeseries of the data from sites, we have the ability to do a "drill-down" on the observations and TAF
+
 - [x] Add keyboard shortcuts for next/prev/play/pause of animation
 
-## Using:
+## Major Project Dependencies:
 
 - [React 18](https://react.dev/reference/react)
 - [React Map GL](https://visgl.github.io/react-map-gl/)
