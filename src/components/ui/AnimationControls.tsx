@@ -4,17 +4,29 @@ import AnimationControlButton from "./AnimationControlButton";
 import { useAnimationContext } from "../../contexts/animationContext";
 
 import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
-import Progress from "./progress";
+import { Slider } from "./slider";
+import { NUM_HRS_DATA } from "@/utilities/constants";
 
 const AnimationControls = () => {
   const animation = useAnimationContext();
 
-  const [startTime, setStartTime] = useState(makeISOTimeStamp(animation.startTime, "display"));
-  const [endTime, setEndTime] = useState(makeISOTimeStamp(animation.endTime, "display"));
+  const [startTime, setStartTime] = useState(
+    makeISOTimeStamp(animation.startTime, "display"),
+  );
+  const [endTime, setEndTime] = useState(
+    makeISOTimeStamp(animation.endTime, "display"),
+  );
   const [loopID, setLoopID] = useState<NodeJS.Timeout>();
 
   // type of buttons for controlling the animation
-  const ANIM_CONTROLS: string[] = ["last", "prev", "play", "pause", "next", "first"];
+  const ANIM_CONTROLS: string[] = [
+    "last",
+    "prev",
+    "play",
+    "pause",
+    "next",
+    "first",
+  ];
 
   /**
    * helper function to handle the logic for looping through the animation
@@ -53,17 +65,23 @@ const AnimationControls = () => {
 
       case "next":
         animation.setAnimationState(false);
-        animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.currentFrame, 1));
+        animation.setCurrentFrame(
+          getNewFrame(animation.frameCount, animation.currentFrame, 1),
+        );
         break;
 
       case "prev":
         animation.setAnimationState(false);
-        animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.currentFrame, -1));
+        animation.setCurrentFrame(
+          getNewFrame(animation.frameCount, animation.currentFrame, -1),
+        );
         break;
 
       case "first":
         animation.setAnimationState(false);
-        animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.frameCount - 1));
+        animation.setCurrentFrame(
+          getNewFrame(animation.frameCount, animation.frameCount - 1),
+        );
         break;
 
       case "last":
@@ -105,7 +123,7 @@ const AnimationControls = () => {
       const translated = translateKeyboardInput(event.code);
       translated != "" ? doAnimateCommand(translated) : "";
     },
-    [animation.currentFrame, animation.animationState]
+    [animation.currentFrame, animation.animationState],
   );
 
   /**
@@ -133,14 +151,20 @@ const AnimationControls = () => {
   useEffect(() => {
     // calculate the milliseconds per frame
     // if wwe are on the last frame, hold for 2 seconds before starting the loop again
-    const delay: number = animation.currentFrame === animation.frameCount - 1 ? 2000 : 1000 / animation.frameRate;
+    const delay: number =
+      animation.currentFrame === animation.frameCount - 1
+        ? 2000
+        : 1000 / animation.frameRate;
 
     if (animation.animationState === true) {
       setLoopID(
         setInterval(
-          () => animation.setCurrentFrame(getNewFrame(animation.frameCount, animation.currentFrame, 1)),
-          delay
-        )
+          () =>
+            animation.setCurrentFrame(
+              getNewFrame(animation.frameCount, animation.currentFrame, 1),
+            ),
+          delay,
+        ),
       );
     } else {
       clearInterval(loopID);
@@ -163,7 +187,7 @@ const AnimationControls = () => {
         key={index}
         type={command}
         onClick={() => handleClick(command)}
-        className="bg-teal-700 text-white hover:bg-teal-500 hover:cursor-pointer border-black border flex justify-center items-center rounded-none first-of-type:rounded-s-md last-of-type:rounded-e-md"
+        className="flex items-center justify-center rounded-none border border-black bg-teal-700 text-white first-of-type:rounded-s-md last-of-type:rounded-e-md hover:cursor-pointer hover:bg-teal-500"
       />
     );
     if (command === "play" && animation.animationState === true) {
@@ -184,7 +208,9 @@ const AnimationControls = () => {
     doAnimateCommand(control);
   };
 
-  const animationProgress = (animation.currentFrame / (animation.frameCount - 1)) * 100;
+  const animationProgress =
+    (animation.currentFrame / (animation.frameCount - 1)) * 100;
+  const sliderStep = (NUM_HRS_DATA * 60 * 60 * 1000) / animation.timeStep;
 
   return (
     <div>
@@ -193,15 +219,33 @@ const AnimationControls = () => {
         <span key="end">{endTime}</span>
       </div>
 
-      {/* this needs to be interactable/clickable and likely would benefit from a custom <Range> component */}
-      <Progress value={animationProgress} indicatorColor="bg-teal-600" className="bg-teal-900" />
+      <Slider
+        // defaultValue={[animation.endTime]}
+        max={animation.endTime}
+        min={animation.startTime + animation.timeStep}
+        step={animation.timeStep}
+        value={[
+          animation.startTime +
+            animation.timeStep * (animation.currentFrame + 1),
+        ]}
+        onValueChange={(e) => {
+          animation.setCurrentFrame(
+            getNewFrame(
+              animation.frameCount,
+              (e[0] - animation.startTime) / animation.timeStep,
+            ),
+          );
+        }}
+      />
 
-      <div className="inline-flex my-2">
-        <div className="inline-flex">{ANIM_CONTROLS.map((c, index) => buildButton(c, index))}</div>
-        <div className="inline-flex items-center ms-2">
-          <label className=" me-2">FPS:</label>
+      <div className="my-2 inline-flex">
+        <div className="inline-flex">
+          {ANIM_CONTROLS.map((c, index) => buildButton(c, index))}
+        </div>
+        <div className="ms-2 inline-flex items-center">
+          <label className="me-2">FPS:</label>
           <input
-            className="text-black ps-2 rounded"
+            className="rounded ps-2 text-black"
             max={10}
             min={2}
             defaultValue={animation.frameRate}
