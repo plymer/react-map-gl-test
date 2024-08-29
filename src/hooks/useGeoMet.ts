@@ -4,14 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import { LayerDetails } from "../utilities/types";
 import { generateTimeSteps, parseTimes } from "../utilities/GeoMetSetup";
 
-function useGeomet(searchString: string) {
+function useGeomet(layer: string) {
   // TODO:: we need to find a way to synchronize the timesteps in case the layers are mismatched (sometimes GOES-East data is 1 step ahead of WEST)
 
   // this function will handle the remainder of the parsing and creating of times and is called by react-query
   const parseTimeDetails = async () => {
     const data = await axios
-      .get<string>(GEOMET_GETCAPABILITIES + searchString)
+      .get<string>(GEOMET_GETCAPABILITIES + layer)
       .then((response) => response.data);
+
     const details = parseTimes(data) as LayerDetails;
 
     const timeSteps = generateTimeSteps(
@@ -22,7 +23,7 @@ function useGeomet(searchString: string) {
 
     const productURLs: string[] = [];
     timeSteps.forEach((t) => {
-      productURLs.push(GEOMET_GETMAP + searchString + "&time=" + t);
+      productURLs.push(GEOMET_GETMAP + layer + "&time=" + t);
     });
 
     const output = { ...details, urls: productURLs };
@@ -31,7 +32,7 @@ function useGeomet(searchString: string) {
   };
 
   return useQuery({
-    queryKey: [searchString],
+    queryKey: [layer],
     queryFn: parseTimeDetails,
     refetchInterval: 1 * 60 * 1000,
   });

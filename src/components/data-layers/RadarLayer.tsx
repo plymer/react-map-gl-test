@@ -1,4 +1,4 @@
-import { GEOMET_GETMAP } from "@/utilities/constants";
+// import { GEOMET_GETMAP } from "@/utilities/constants";
 import { useAnimationContext } from "../../contexts/animationContext";
 
 import { useEffect, useState } from "react";
@@ -7,18 +7,21 @@ import { Layer, Source } from "react-map-gl/maplibre";
 
 import { LayerDetails } from "../../utilities/types";
 import useGeoMet from "@/hooks/useGeoMet";
+import { RADAR_BOUNDS } from "@/utilities/constants";
+import { useGeoMetContext } from "@/contexts/geometContext";
 
 interface Props {
-  precipType: "rain" | "snow";
+  geoMetSearchString: string;
 }
 
-const RadarLayer = ({ precipType }: Props) => {
+const RadarLayer = ({ geoMetSearchString }: Props) => {
   const animation = useAnimationContext();
-
-  const geoMetSearchString =
-    precipType === "rain" ? "RADAR_1KM_RRAI" : "RADAR_1KM_RSNO";
+  const radar = useGeoMetContext();
 
   const [layerInfo, setLayerInfo] = useState<LayerDetails>();
+  //   const [product, setProduct] = useState<string>(precipType);
+
+  //   const { data, fetchStatus } = useGeoMet(geoMetSearchString);
 
   const { data, fetchStatus, refetch } = useGeoMet(geoMetSearchString);
 
@@ -29,11 +32,18 @@ const RadarLayer = ({ precipType }: Props) => {
     }
   }, [fetchStatus]);
 
+  // this effect is called whenever the subproduct changes from user input
+  useEffect(() => {
+    refetch();
+  }, [radar]);
+
   const source: RasterSource = {
     type: "raster",
     tileSize: 256,
+    bounds: RADAR_BOUNDS,
   };
 
+  //   if (animation.animationState) {
   return layerInfo?.urls.map((u, index) => (
     <Source {...source} key={index} tiles={[u]}>
       <Layer
@@ -52,6 +62,28 @@ const RadarLayer = ({ precipType }: Props) => {
       />
     </Source>
   ));
+  //   } else {
+  //     return (
+  //       <Source
+  //         {...source}
+  //         key={0}
+  //         tiles={[
+  //           layerInfo?.urls[animation.currentFrame] ||
+  //             GEOMET_GETMAP + geoMetSearchString,
+  //         ]}
+  //       >
+  //         <Layer
+  //           type="raster"
+  //           source="source"
+  //           id={"layer-radar0"}
+  //           beforeId="wateroutline"
+  //           paint={{
+  //             "raster-fade-duration": 0, // this literally doesn't do anything
+  //           }}
+  //         />
+  //       </Source>
+  //     );
+  //   }
 };
 
 export default RadarLayer;

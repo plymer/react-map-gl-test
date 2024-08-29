@@ -22,14 +22,14 @@ import { MAP_BOUNDS, MAP_STYLE_URL } from "./utilities/constants";
 
 // contexts
 import { ClockContextProvider } from "./contexts/clockContext";
-import { useSatelliteContext } from "./contexts/satelliteContext";
+import { useGeoMetContext } from "./contexts/geometContext";
 import RadarLayer from "./components/data-layers/RadarLayer";
 
 // set the default values for the map centre and the zoom level
 const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
 
 function App() {
-  const satelliteContext = useSatelliteContext();
+  const geoMetContext = useGeoMetContext();
 
   const getStyle = () =>
     axios
@@ -88,16 +88,20 @@ function App() {
           (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
         }
       >
+        {geoMetContext.showRadar! === true ? (
+          <RadarLayer geoMetSearchString={geoMetContext.radarProduct!} />
+        ) : (
+          ""
+        )}
+
         <SatelliteLayer
           satellite="GOES-West"
-          subProduct={satelliteContext.subProduct}
+          subProduct={geoMetContext.subProduct!}
         />
         <SatelliteLayer
           satellite="GOES-East"
-          subProduct={satelliteContext.subProduct}
+          subProduct={geoMetContext.subProduct!}
         />
-
-        <RadarLayer precipType="rain" />
 
         <AttributionControl compact position="top-right" />
       </Map>

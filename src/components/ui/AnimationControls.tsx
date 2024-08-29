@@ -236,7 +236,7 @@ const AnimationControls = () => {
             ),
           );
         }}
-        className="my-2"
+        className="my-2 bg-gray-800"
       />
 
       <div className="my-2 inline-flex">
@@ -244,8 +244,11 @@ const AnimationControls = () => {
           {ANIM_CONTROLS.map((c, index) => buildButton(c, index))}
         </div>
         <div className="ms-2 inline-flex items-center">
-          <label className="me-2">FPS:</label>
+          <label htmlFor="framerate" className="me-2">
+            FPS:
+          </label>
           <input
+            id="framerate"
             className="rounded ps-2 text-black"
             max={10}
             min={2}

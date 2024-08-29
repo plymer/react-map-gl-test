@@ -5,9 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 const MapControlsBar = () => {
   return (
-    <div className="absolute bottom-0 left-0 rounded-tr-lg border-b border-r border-black bg-slate-900 p-2 text-white">
+    <div className="absolute bottom-0 left-0 grid grid-cols-2 rounded-tr-lg border-b border-r border-black bg-gray-800 p-2 text-white">
       <AnimationControls />
-      <Tabs className="ms-2 inline-block bg-slate-500">
+      <Tabs defaultValue="satellite" className="ms-2 inline-block">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="satellite">Satellite</TabsTrigger>
           <TabsTrigger value="radar">Radar</TabsTrigger>

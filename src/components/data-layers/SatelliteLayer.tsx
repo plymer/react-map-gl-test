@@ -3,14 +3,10 @@ import type { RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
 import { LayerDetails } from "../../utilities/types";
-import {
-  GEOMET_GETMAP,
-  GOES_EAST_BOUNDS,
-  GOES_WEST_BOUNDS,
-} from "../../utilities/constants";
+import { GOES_EAST_BOUNDS, GOES_WEST_BOUNDS } from "../../utilities/constants";
 
 import useGeoMet from "../../hooks/useGeoMet";
-import { useSatelliteContext } from "../../contexts/satelliteContext";
+import { useGeoMetContext } from "../../contexts/geometContext";
 import { useAnimationContext } from "../../contexts/animationContext";
 
 interface Props {
@@ -20,7 +16,7 @@ interface Props {
 
 const SatelliteLayer = ({ satellite, subProduct }: Props) => {
   const animation = useAnimationContext();
-  const satelliteContext = useSatelliteContext();
+  const satelliteContext = useGeoMetContext();
 
   const [layerInfo, setLayerInfo] = useState<LayerDetails>();
 
@@ -55,6 +51,7 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
 
   // const currentTiles = layerInfo?.urls[animation.currentFrame];
 
+  // if (animation.animationState) {
   return layerInfo?.urls.map((u, index) => (
     <Source {...source} key={index} tiles={[u]}>
       <Layer
@@ -74,6 +71,28 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
       />
     </Source>
   ));
+  // } else {
+  //   return (
+  //     <Source
+  //       {...source}
+  //       key={0}
+  //       tiles={[
+  //         layerInfo?.urls[animation.currentFrame] ||
+  //           GEOMET_GETMAP + satellite + "_" + subProduct,
+  //       ]}
+  //     >
+  //       <Layer
+  //         type="raster"
+  //         source="source"
+  //         id={"layer-" + satellite}
+  //         beforeId="layer-radar0"
+  //         paint={{
+  //           "raster-fade-duration": 0, // this literally doesn't do anything
+  //         }}
+  //       />
+  //     </Source>
+  //   );
+  // }
 };
 
 export default SatelliteLayer;
