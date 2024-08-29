@@ -1,4 +1,11 @@
-import { MdFirstPage, MdLastPage, MdNavigateBefore, MdNavigateNext, MdPause, MdPlayArrow } from "react-icons/md";
+import {
+  MdFirstPage,
+  MdLastPage,
+  MdNavigateBefore,
+  MdNavigateNext,
+  MdPause,
+  MdPlayArrow,
+} from "react-icons/md";
 import Button from "./Button";
 
 interface Props {
@@ -10,7 +17,7 @@ interface Props {
 const AnimationControlButton = ({ onClick, type, className }: Props) => {
   return (
     <Button id={type} onClick={onClick} className={className}>
-      {type === "last" ? <MdFirstPage className="text-center h-6 w-6" /> : ""}
+      {type === "last" ? <MdFirstPage className="h-6 w-6" /> : ""}
       {type === "prev" ? <MdNavigateBefore className="h-6 w-6" /> : ""}
       {type === "play" ? <MdPlayArrow className="h-6 w-6" /> : ""}
       {type === "pause" ? <MdPause className="h-6 w-6" /> : ""}
