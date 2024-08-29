@@ -23,6 +23,7 @@ import { MAP_BOUNDS, MAP_STYLE_URL } from "./utilities/constants";
 // contexts
 import { ClockContextProvider } from "./contexts/clockContext";
 import { useSatelliteContext } from "./contexts/satelliteContext";
+import RadarLayer from "./components/data-layers/RadarLayer";
 
 // set the default values for the map centre and the zoom level
 const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
@@ -30,7 +31,10 @@ const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
 function App() {
   const satelliteContext = useSatelliteContext();
 
-  const getStyle = () => axios.get<StyleSpecification>(MAP_STYLE_URL).then((response) => response.data);
+  const getStyle = () =>
+    axios
+      .get<StyleSpecification>(MAP_STYLE_URL)
+      .then((response) => response.data);
 
   const { data: mapStyle } = useQuery({
     queryKey: ["mapStyle"],
@@ -59,9 +63,12 @@ function App() {
         mapStyle={mapStyle}
         onLoad={
           /* populate the map centre coords with the default values */
-          () => setCoords([defaultView.lon, defaultView.lat])
+          () => {
+            setCoords([defaultView.lon, defaultView.lat]);
+            // console.log(e.target.getLayersOrder());
+          }
         }
-        onData={
+        onSourceData={
           /* while data is loading, set our loading flag to 'on' */
           () => {
             // console.log(e.dataType, e.originalEvent, e.target.areTilesLoaded());
@@ -81,8 +88,16 @@ function App() {
           (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
         }
       >
-        <SatelliteLayer satellite="GOES-West" subProduct={satelliteContext.subProduct} />
-        <SatelliteLayer satellite="GOES-East" subProduct={satelliteContext.subProduct} />
+        <SatelliteLayer
+          satellite="GOES-West"
+          subProduct={satelliteContext.subProduct}
+        />
+        <SatelliteLayer
+          satellite="GOES-East"
+          subProduct={satelliteContext.subProduct}
+        />
+
+        <RadarLayer precipType="rain" />
 
         <AttributionControl compact position="top-right" />
       </Map>

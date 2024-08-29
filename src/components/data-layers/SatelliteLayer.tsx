@@ -9,7 +9,7 @@ import {
   GOES_WEST_BOUNDS,
 } from "../../utilities/constants";
 
-import useSatellite from "../../hooks/useSatellite";
+import useGeoMet from "../../hooks/useGeoMet";
 import { useSatelliteContext } from "../../contexts/satelliteContext";
 import { useAnimationContext } from "../../contexts/animationContext";
 
@@ -23,16 +23,12 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
   const satelliteContext = useSatelliteContext();
 
   const [layerInfo, setLayerInfo] = useState<LayerDetails>();
-  const [activeIndex, setActiveIndex] = useState<number>(
-    animation.currentFrame,
-  );
-  const [hasLooped, setHasLooped] = useState<boolean>(false);
 
   const {
     data: timeData,
     fetchStatus,
     refetch,
-  } = useSatellite(satellite, subProduct);
+  } = useGeoMet(satellite + "_" + subProduct);
 
   const updateTimes = (times: LayerDetails) => {
     setLayerInfo(times);
@@ -51,54 +47,33 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
     refetch();
   }, [satelliteContext]);
 
-  useEffect(() => {
-    setActiveIndex(animation.currentFrame);
-  }, [animation.currentFrame]);
-
   const source: RasterSource = {
     type: "raster",
     tileSize: 256,
     bounds: satellite === "GOES-West" ? GOES_WEST_BOUNDS : GOES_EAST_BOUNDS,
   };
 
-  const currentTiles = layerInfo?.urls[animation.currentFrame];
+  // const currentTiles = layerInfo?.urls[animation.currentFrame];
 
-  return animation.animationState === false && hasLooped === false
-    ? (setHasLooped(true),
-      (
-        <Source
-          {...source}
-          key={satellite}
-          tiles={[currentTiles || GEOMET_GETMAP + satellite + "_" + subProduct]}
-        >
-          <Layer
-            type="raster"
-            source="source"
-            id={"layer-" + satellite}
-            beforeId="wateroutline"
-            paint={{}}
-          />
-        </Source>
-      ))
-    : layerInfo?.urls.map((u, index) => (
-        <Source {...source} key={index} tiles={[u]}>
-          <Layer
-            type="raster"
-            source="source"
-            id={"layer-" + satellite + index}
-            beforeId="wateroutline"
-            paint={{
-              "raster-fade-duration": 0, // this literally doesn't do anything
-              "raster-opacity":
-                index === activeIndex ||
-                index === activeIndex - 1 ||
-                index === 0
-                  ? 1
-                  : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
-            }}
-          />
-        </Source>
-      ));
+  return layerInfo?.urls.map((u, index) => (
+    <Source {...source} key={index} tiles={[u]}>
+      <Layer
+        type="raster"
+        source="source"
+        id={"layer-" + satellite + index}
+        beforeId="layer-radar0"
+        paint={{
+          "raster-fade-duration": 0, // this literally doesn't do anything
+          "raster-opacity":
+            index === animation.currentFrame ||
+            index === animation.currentFrame - 1 ||
+            index === 0
+              ? 1
+              : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
+        }}
+      />
+    </Source>
+  ));
 };
 
 export default SatelliteLayer;

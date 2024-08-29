@@ -5,7 +5,7 @@ import { useAnimationContext } from "../../contexts/animationContext";
 
 import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
 import { Slider } from "./slider";
-import { NUM_HRS_DATA } from "@/utilities/constants";
+// import { NUM_HRS_DATA } from "@/utilities/constants";
 
 const AnimationControls = () => {
   const animation = useAnimationContext();
@@ -139,6 +139,7 @@ const AnimationControls = () => {
 
   /**
    * updates our start and end times every time the data updates
+   * listens for the a change in the animation context
    */
   useEffect(() => {
     setStartTime(makeISOTimeStamp(animation.startTime, "display"));
@@ -208,12 +209,12 @@ const AnimationControls = () => {
     doAnimateCommand(control);
   };
 
-  const animationProgress =
-    (animation.currentFrame / (animation.frameCount - 1)) * 100;
-  const sliderStep = (NUM_HRS_DATA * 60 * 60 * 1000) / animation.timeStep;
+  // const animationProgress =
+  //   (animation.currentFrame / (animation.frameCount - 1)) * 100;
+  // const sliderStep = (NUM_HRS_DATA * 60 * 60 * 1000) / animation.timeStep;
 
   return (
-    <div>
+    <div className="inline-block">
       <div className="flex justify-between font-mono">
         <span key="start">{startTime}</span>
         <span key="end">{endTime}</span>
@@ -235,6 +236,7 @@ const AnimationControls = () => {
             ),
           );
         }}
+        className="my-2"
       />
 
       <div className="my-2 inline-flex">
