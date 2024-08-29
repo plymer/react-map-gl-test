@@ -220,7 +220,6 @@ const AnimationControls = () => {
       </div>
 
       <Slider
-        // defaultValue={[animation.endTime]}
         max={animation.endTime}
         min={animation.startTime + animation.timeStep}
         step={animation.timeStep}
