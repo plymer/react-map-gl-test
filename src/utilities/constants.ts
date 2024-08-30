@@ -30,7 +30,7 @@ export const RADAR_BOUNDS: [number, number, number, number] = [
   MAX_EAST,
   60,
 ];
-export const MAP_STYLE_URL: string = "src/assets/map-styles/positronwxmap.json";
+export const MAP_STYLE_URL: string = "public/map-styles/positronwxmap.json";
 export const MAP_TILE_CACHE_SIZE: number = 1024 * 1024 * 400; // in bytes
 
 // settings for data layers
