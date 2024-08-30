@@ -4,7 +4,7 @@ import { LngLatBoundsLike } from "maplibre-gl";
 const MAX_WEST: number = -150;
 const MAX_SOUTH: number = 30;
 const MAX_EAST: number = -40;
-const MAX_NORTH: number = 90;
+const MAX_NORTH: number = 85;
 const EAST_WEST_SPLIT: number = -90;
 export const MAP_BOUNDS: LngLatBoundsLike = [
   MAX_WEST,
