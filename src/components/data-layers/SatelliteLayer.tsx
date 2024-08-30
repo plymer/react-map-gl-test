@@ -12,9 +12,10 @@ import { useAnimationContext } from "../../contexts/animationContext";
 interface Props {
   satellite: "GOES-West" | "GOES-East";
   subProduct: string;
+  before: string;
 }
 
-const SatelliteLayer = ({ satellite, subProduct }: Props) => {
+const SatelliteLayer = ({ satellite, subProduct, before }: Props) => {
   const animation = useAnimationContext();
   const satelliteContext = useGeoMetContext();
 
@@ -58,7 +59,7 @@ const SatelliteLayer = ({ satellite, subProduct }: Props) => {
         type="raster"
         source="source"
         id={"layer-" + satellite + index}
-        beforeId="layer-radar0"
+        beforeId={before}
         paint={{
           "raster-fade-duration": 0, // this literally doesn't do anything
           "raster-opacity":

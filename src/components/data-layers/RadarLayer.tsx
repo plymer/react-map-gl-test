@@ -12,9 +12,10 @@ import { useGeoMetContext } from "@/contexts/geometContext";
 
 interface Props {
   geoMetSearchString: string;
+  before: string;
 }
 
-const RadarLayer = ({ geoMetSearchString }: Props) => {
+const RadarLayer = ({ geoMetSearchString, before }: Props) => {
   const animation = useAnimationContext();
   const radar = useGeoMetContext();
 
@@ -50,7 +51,7 @@ const RadarLayer = ({ geoMetSearchString }: Props) => {
         type="raster"
         source="source"
         id={"layer-radar" + index}
-        beforeId="wateroutline"
+        beforeId={before}
         paint={{
           "raster-fade-duration": 0, // this literally doesn't do anything
           "raster-opacity":

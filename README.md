@@ -29,7 +29,7 @@ Another longer-term benefit for this project is that it initiates a modernizatio
 - [x] Enable map boundaries
 - [x] Create `utilities/constants.ts` file which holds static data for the app
 - [ ] Add static data to the map tiles
-  - [ ] Bedposts
+  - [x] Bedposts
   - [ ] TAF Site locations (w/ 5nm ring)
 
 ### Animation:
@@ -47,9 +47,12 @@ Another longer-term benefit for this project is that it initiates a modernizatio
     - [ ] Add progressive / regressive features that only load animation frames when animating, otherwise, only load single layers of the data and keep it up to date
   - [ ] Synchronize the timesteps available in the satellite layers so that GOES-East/West are not showing different times
 - Radar
-  - [ ] Add Radar from GeoMet
-  - GeoMet data is in 6-minute bins, which will require us to normalize the data across the 10-minute bins that are used for
+  - [x] Add Radar from GeoMet
+  - [ ] Map data bins from 6 to 10 minutes
+    - GeoMet data is in 6-minute bins, which will require us to normalize the data across the 10-minute bins that are used for
 - Lightning
+  - [x] Create Lightning Layer
+  - [ ] Create hook for lightning fetch
   - [ ] Add CLDN data from DMS
     - In current WxMap implementation, DMS is queried and all lightning data is being handled by the **client**
     - I am proposing and _strongly_ recommending that we move this DMS query/data formatting logic to the server
@@ -60,6 +63,9 @@ Another longer-term benefit for this project is that it initiates a modernizatio
   - Later iteration question is, _"Do the surface observations need to have all of their elements rendered for previous time steps?"_
     - This question is posed because reducing the amount of data retained and formatted would enhance performance
     - I also question the need since if a user is interested in a timeseries of the data from sites, we have the ability to do a "drill-down" on the observations and TAF
+    - Invesigate **sprites** and how it might/might not improve performance
+      - not sure of what the limitations are for size etc
+      - I have SVG files for all wind barbs, wx symbols, etc from a [repo](https://www.github.com/plymer/wx-symbols)
 - PIREPS
   - [ ] Add PIREPs
     - [ ] Set validity length of data

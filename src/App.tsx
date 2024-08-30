@@ -24,6 +24,7 @@ import { MAP_BOUNDS, MAP_STYLE_URL } from "./utilities/constants";
 import { ClockContextProvider } from "./contexts/clockContext";
 import { useGeoMetContext } from "./contexts/geometContext";
 import RadarLayer from "./components/data-layers/RadarLayer";
+import LightningLayer from "./components/data-layers/LightningLayer";
 
 // set the default values for the map centre and the zoom level
 const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
@@ -89,18 +90,26 @@ function App() {
         }
       >
         {geoMetContext.showRadar! === true ? (
-          <RadarLayer geoMetSearchString={geoMetContext.radarProduct!} />
+          <RadarLayer
+            geoMetSearchString={geoMetContext.radarProduct!}
+            before="lightning0"
+            // before="wateroutline"
+          />
         ) : (
           ""
         )}
 
+        <LightningLayer before="wateroutline" />
+
         <SatelliteLayer
           satellite="GOES-West"
           subProduct={geoMetContext.subProduct!}
+          before="layer-radar0"
         />
         <SatelliteLayer
           satellite="GOES-East"
           subProduct={geoMetContext.subProduct!}
+          before="layer-radar0"
         />
 
         <AttributionControl compact position="top-right" />
