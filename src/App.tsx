@@ -1,8 +1,9 @@
 // 3rd party libraries
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Map from "react-map-gl/maplibre";
+import type { MapRef } from "react-map-gl/maplibre";
 import { AttributionControl } from "react-map-gl";
 import { StyleSpecification } from "maplibre-gl";
 
@@ -27,9 +28,10 @@ import RadarLayer from "./components/data-layers/RadarLayer";
 import LightningLayer from "./components/data-layers/LightningLayer";
 
 // set the default values for the map centre and the zoom level
-const defaultView: View = { lon: -113, lat: 53, zoom: 3 };
+const DEFAULT_VIEW: View = { lon: -113, lat: 53, zoom: 3 };
 
 function App() {
+  const mapRef = useRef<MapRef>(null);
   const geoMetContext = useGeoMetContext();
 
   const getStyle = () =>
@@ -43,16 +45,18 @@ function App() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [coords, setCoords] = useState<number[]>();
+  const [baseMapLoaded, setBaseMapLoaded] = useState(false);
+  const [lat, setLat] = useState(DEFAULT_VIEW.lat);
+  const [lon, setLon] = useState(DEFAULT_VIEW.lon);
+  const [zoom, setZoom] = useState(DEFAULT_VIEW.zoom);
 
   return (
     <>
       <Map
-        initialViewState={{
-          longitude: defaultView.lon,
-          latitude: defaultView.lat,
-          zoom: defaultView.zoom,
-        }}
+        ref={mapRef}
+        latitude={lat}
+        longitude={lon}
+        zoom={zoom}
         // maxParallelImageRequests={128}
         attributionControl={false}
         dragRotate={false}
@@ -62,13 +66,8 @@ function App() {
         maxBounds={MAP_BOUNDS}
         style={{ width: "100%", height: "100vh" }}
         mapStyle={mapStyle}
-        onLoad={
-          /* populate the map centre coords with the default values */
-          () => {
-            setCoords([defaultView.lon, defaultView.lat]);
-            // console.log(e.target.getLayersOrder());
-          }
-        }
+        // when the basemap has loaded, set the flag so we can proceed to begin adding our data layers to the map
+        onLoad={() => setBaseMapLoaded(true)}
         onSourceData={
           /* while data is loading, set our loading flag to 'on' */
           () => {
@@ -79,17 +78,27 @@ function App() {
         }
         onIdle={
           /* while nothing is happening in the map, set our loading flag to 'off' */
-          () => {
-            // console.log(e.target.getLayersOrder());
+          (e) => {
             setIsLoading(false);
           }
         }
         onMove={
-          /* update our map-center lat-lon whenever we move the map view */
-          (e) => setCoords([e.viewState.longitude, e.viewState.latitude])
+          /* update our map-center lat-lon and zoom whenever we move the map view */
+          (e) => {
+            setLat(e.viewState.latitude);
+            setLon(e.viewState.longitude);
+            setZoom(e.viewState.zoom);
+          }
         }
       >
-        {geoMetContext.showRadar! === true ? (
+        {baseMapLoaded ? (
+          <LightningLayer before="wateroutline" />
+        ) : (
+          console.log(mapRef.current?.getLayer("wateroutline")?.sourceLayer)
+        )}
+
+        {geoMetContext.showRadar! === true &&
+        mapRef.current?.getLayer("lightning0") ? (
           <RadarLayer
             geoMetSearchString={geoMetContext.radarProduct!}
             before="lightning0"
@@ -99,25 +108,29 @@ function App() {
           ""
         )}
 
-        <LightningLayer before="wateroutline" />
-
-        <SatelliteLayer
-          satellite="GOES-West"
-          subProduct={geoMetContext.subProduct!}
-          before="layer-radar0"
-        />
-        <SatelliteLayer
-          satellite="GOES-East"
-          subProduct={geoMetContext.subProduct!}
-          before="layer-radar0"
-        />
+        {mapRef.current?.getLayer("layer-radar0") ? (
+          <>
+            <SatelliteLayer
+              satellite="GOES-West"
+              subProduct={geoMetContext.subProduct!}
+              before="layer-radar0"
+            />
+            <SatelliteLayer
+              satellite="GOES-East"
+              subProduct={geoMetContext.subProduct!}
+              before="layer-radar0"
+            />
+          </>
+        ) : (
+          ""
+        )}
 
         <AttributionControl compact position="top-right" />
       </Map>
 
       <ClockContextProvider>
         <SynchroClock />
-        <MapStatusBar center={coords} loadState={isLoading} />
+        <MapStatusBar center={[lon, lat]} loadState={isLoading} />
       </ClockContextProvider>
 
       <MapControlsBar />
