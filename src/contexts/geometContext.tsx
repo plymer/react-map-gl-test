@@ -24,8 +24,9 @@ export const GeoMetContextProvider = ({
   const [subProduct, setSubProduct] = useState<IGeoMetContext["subProduct"]>(
     "1km_DayCloudType-NightMicrophysics",
   );
+
   const [radarProduct, setRadarProduct] =
-    useState<IGeoMetContext["radarProduct"]>("RADAR_1KM_RRAI");
+    useState<IGeoMetContext["radarProduct"]>("RRAI");
 
   const [showRadar, setShowRadar] = useState<IGeoMetContext["showRadar"]>(true);
 

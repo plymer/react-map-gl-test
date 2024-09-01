@@ -44,7 +44,8 @@ export const AnimationContextProvider = ({
   const [currentFrame, setCurrentFrame] = useState<
     IAnimationContext["currentFrame"]
   >(frameCount - 1);
-  const [frameRate, setFrameRate] = useState<IAnimationContext["frameRate"]>(5);
+  const [frameRate, setFrameRate] =
+    useState<IAnimationContext["frameRate"]>(10);
   const [startTime, setStartTime] = useState<IAnimationContext["startTime"]>(0);
   const [endTime, setEndTime] = useState<IAnimationContext["endTime"]>(
     Date.now(),

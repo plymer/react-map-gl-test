@@ -1,10 +1,10 @@
 import { Layer, Source } from "react-map-gl";
 
 interface Props {
-  before: string;
+  belowLayer?: string;
 }
 
-const LightningLayer = ({ before }: Props) => {
+const LightningLayer = ({ belowLayer }: Props) => {
   // dummy data
   const geoJson = {
     features: [
@@ -41,8 +41,8 @@ const LightningLayer = ({ before }: Props) => {
     <Source type="geojson" id="lightning" data={geoJson}>
       <Layer
         type="circle"
-        beforeId={before}
-        id="lightning0"
+        beforeId={belowLayer}
+        id="layer-lightning-0"
         paint={{
           "circle-radius": 10,
           "circle-color": "rgba(255,0,0, 0)",

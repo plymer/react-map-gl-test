@@ -3,35 +3,48 @@ import type { RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
 import { LayerDetails } from "../../utilities/types";
-import { GOES_EAST_BOUNDS, GOES_WEST_BOUNDS } from "../../utilities/constants";
+import {
+  GOES_EAST_BOUNDS,
+  GOES_WEST_BOUNDS,
+  MAP_BOUNDS,
+} from "../../utilities/constants";
 
 import useGeoMet from "../../hooks/useGeoMet";
 import { useGeoMetContext } from "../../contexts/geometContext";
 import { useAnimationContext } from "../../contexts/animationContext";
 
 interface Props {
-  satellite: "GOES-West" | "GOES-East";
-  subProduct: string;
-  before: string;
+  type: "satellite" | "radar";
+  domain?: "west" | "east";
+  product?: string;
+  belowLayer?: string;
   initialized: boolean;
 }
 
-const SatelliteLayer = ({
-  satellite,
-  subProduct,
-  before,
+const GeoMetLayer = ({
+  type,
+  domain,
+  product,
+  belowLayer,
   initialized,
 }: Props) => {
   const animation = useAnimationContext();
-  const satelliteContext = useGeoMetContext();
+  const geoMet = useGeoMetContext();
+
+  let geoMetSearchString: string = "";
+
+  switch (type) {
+    case "satellite":
+      geoMetSearchString =
+        domain === "west" ? "GOES-West_" + product : "GOES-East_" + product;
+      break;
+    case "radar":
+      geoMetSearchString = "RADAR_1KM_" + product;
+  }
 
   const [layerInfo, setLayerInfo] = useState<LayerDetails>();
 
-  const {
-    data: timeData,
-    fetchStatus,
-    refetch,
-  } = useGeoMet(satellite + "_" + subProduct);
+  const { data, fetchStatus, refetch } = useGeoMet(geoMetSearchString);
 
   const updateTimes = (times: LayerDetails) => {
     setLayerInfo(times);
@@ -42,19 +55,26 @@ const SatelliteLayer = ({
 
   // this effect will update the satellite data whenever the data is refetched
   useEffect(() => {
-    if (timeData) updateTimes(timeData);
+    if (data) updateTimes(data);
   }, [fetchStatus]);
 
   // this effect is called whenever the subproduct changes from user input
   useEffect(() => {
     refetch();
-  }, [satelliteContext]);
+  }, [geoMet]);
 
   const source: RasterSource = {
     type: "raster",
     tileSize: 256,
-    bounds: satellite === "GOES-West" ? GOES_WEST_BOUNDS : GOES_EAST_BOUNDS,
+    bounds:
+      type === "satellite"
+        ? domain === "west"
+          ? GOES_WEST_BOUNDS
+          : GOES_EAST_BOUNDS
+        : MAP_BOUNDS,
   };
+
+  const layerId = domain ? "layer-" + type + "-" + domain : "layer-" + type;
 
   if (layerInfo) {
     if (initialized === false)
@@ -67,8 +87,8 @@ const SatelliteLayer = ({
           <Layer
             type="raster"
             source="source"
-            id={"layer-" + satellite + "0"}
-            beforeId={before}
+            id={layerId + "-0"}
+            beforeId={belowLayer}
             paint={{
               "raster-fade-duration": 0, // this literally doesn't do anything
               "raster-opacity": 1,
@@ -82,14 +102,14 @@ const SatelliteLayer = ({
           <Layer
             type="raster"
             source="source"
-            id={"layer-" + satellite + index}
-            beforeId={before}
+            id={layerId + "-" + index}
+            beforeId={belowLayer}
             paint={{
               "raster-fade-duration": 0, // this literally doesn't do anything
               "raster-opacity":
                 index === animation.currentFrame ||
                 index === animation.currentFrame - 1 ||
-                index === 0
+                (type === "satellite" && index === 0)
                   ? 1
                   : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
             }}
@@ -99,4 +119,4 @@ const SatelliteLayer = ({
   }
 };
 
-export default SatelliteLayer;
+export default GeoMetLayer;

@@ -13,9 +13,10 @@ import { useGeoMetContext } from "@/contexts/geometContext";
 interface Props {
   geoMetSearchString: string;
   before: string;
+  initialized: boolean;
 }
 
-const RadarLayer = ({ geoMetSearchString, before }: Props) => {
+const RadarLayer = ({ geoMetSearchString, before, initialized }: Props) => {
   const animation = useAnimationContext();
   const radar = useGeoMetContext();
 
@@ -44,47 +45,46 @@ const RadarLayer = ({ geoMetSearchString, before }: Props) => {
     bounds: RADAR_BOUNDS,
   };
 
-  //   if (animation.animationState) {
-  return layerInfo?.urls.map((u, index) => (
-    <Source {...source} key={index} tiles={[u]}>
-      <Layer
-        type="raster"
-        source="source"
-        id={"layer-radar" + index}
-        beforeId={before}
-        paint={{
-          "raster-fade-duration": 0, // this literally doesn't do anything
-          "raster-opacity":
-            index === animation.currentFrame ||
-            index === animation.currentFrame - 1
-              ? 1
-              : 0,
-        }}
-      />
-    </Source>
-  ));
-  //   } else {
-  //     return (
-  //       <Source
-  //         {...source}
-  //         key={0}
-  //         tiles={[
-  //           layerInfo?.urls[animation.currentFrame] ||
-  //             GEOMET_GETMAP + geoMetSearchString,
-  //         ]}
-  //       >
-  //         <Layer
-  //           type="raster"
-  //           source="source"
-  //           id={"layer-radar0"}
-  //           beforeId="wateroutline"
-  //           paint={{
-  //             "raster-fade-duration": 0, // this literally doesn't do anything
-  //           }}
-  //         />
-  //       </Source>
-  //     );
-  //   }
+  if (layerInfo) {
+    if (initialized === false)
+      return (
+        <Source
+          {...source}
+          key={0}
+          tiles={[layerInfo.urls[animation.currentFrame]]}
+        >
+          <Layer
+            type="raster"
+            source="source"
+            id={"layer-radar" + "0"}
+            beforeId={before}
+            paint={{
+              "raster-fade-duration": 0, // this literally doesn't do anything
+              "raster-opacity": 1,
+            }}
+          />
+        </Source>
+      );
+    else
+      return layerInfo.urls.map((u, index) => (
+        <Source {...source} key={index} tiles={[u]}>
+          <Layer
+            type="raster"
+            source="source"
+            id={"layer-radar" + index}
+            beforeId={before}
+            paint={{
+              "raster-fade-duration": 0, // this literally doesn't do anything
+              "raster-opacity":
+                index === animation.currentFrame ||
+                index === animation.currentFrame - 1
+                  ? 1
+                  : 0,
+            }}
+          />
+        </Source>
+      ));
+  }
 };
 
 export default RadarLayer;

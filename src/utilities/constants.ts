@@ -6,7 +6,7 @@ const MAX_SOUTH: number = 30;
 const MAX_EAST: number = -40;
 const MAX_NORTH: number = 85;
 const EAST_WEST_SPLIT: number = -90;
-export const MAP_BOUNDS: LngLatBoundsLike = [
+export const MAP_BOUNDS: LngLatBoundsLike & [number, number, number, number] = [
   MAX_WEST,
   MAX_SOUTH,
   MAX_EAST,
