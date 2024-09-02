@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Map, { Layer, Source } from "react-map-gl/maplibre";
+import Map from "react-map-gl/maplibre";
 import { AttributionControl } from "react-map-gl";
 import { StyleSpecification } from "maplibre-gl";
 
@@ -45,10 +45,7 @@ function App() {
 
   // controls the state of the loading spinner
   const [isLoading, setIsLoading] = useState(false);
-  // communicates that the map is has fully loaded it's 'initial' state
-  const [mapInitialized, setMapInitialized] = useState(false);
-  // the timeout object that is created when we idle for 2 seconds
-  const [initializer, setInitializer] = useState<NodeJS.Timeout>();
+
   // map viewstate is CONTROLLED in this app
   const [lat, setLat] = useState(DEFAULT_VIEW.lat);
   const [lon, setLon] = useState(DEFAULT_VIEW.lon);
@@ -77,20 +74,15 @@ function App() {
           // we turn the loading spinner off when the map isn't doing anything
           setIsLoading(false);
           // this will only get called once the very first onIdle is called so that we can say that we have initialized the map with the first rendered images
-
-          setMapInitialized(true);
-          // setInitializer(
-          //   setTimeout(() => {
-          //     setMapInitialized(true);
-          //   }, 2000),
-          // );
+          animation.animationState === "loading"
+            ? animation.setAnimationState("playing")
+            : "";
         }}
         onMove={
           /* update our map-center lat-lon and zoom whenever we move the map view */
           (e) => {
-            setMapInitialized(false);
-            animation.setAnimationState(false);
-            // clearTimeout(initializer);
+            animation.setAnimationState("paused");
+
             setLat(e.viewState.latitude);
             setLon(e.viewState.longitude);
             setZoom(e.viewState.zoom);
@@ -103,9 +95,7 @@ function App() {
           <GeoMetLayer
             type="radar"
             product={geoMetContext.radarProduct}
-            initialized={mapInitialized}
             belowLayer="layer-lightning-0"
-            dataFetching={isLoading}
           />
         ) : (
           ""
@@ -115,17 +105,13 @@ function App() {
           type="satellite"
           product={geoMetContext.subProduct}
           domain="west"
-          initialized={mapInitialized}
           belowLayer="layer-radar-0"
-          dataFetching={isLoading}
         />
         <GeoMetLayer
           type="satellite"
           product={geoMetContext.subProduct}
           domain="east"
-          initialized={mapInitialized}
           belowLayer="layer-radar-0"
-          dataFetching={isLoading}
         />
 
         <AttributionControl compact position="top-right" />

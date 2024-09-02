@@ -56,36 +56,36 @@ const AnimationControls = () => {
   const doAnimateCommand = (control: string) => {
     switch (control) {
       case "play":
-        animation.setAnimationState(true);
+        animation.setAnimationState("loading");
         break;
 
       case "pause":
-        animation.setAnimationState(false);
+        animation.setAnimationState("paused");
         break;
 
       case "next":
-        animation.setAnimationState(false);
+        animation.setAnimationState("paused");
         animation.setCurrentFrame(
           getNewFrame(animation.frameCount, animation.currentFrame, 1),
         );
         break;
 
       case "prev":
-        animation.setAnimationState(false);
+        animation.setAnimationState("paused");
         animation.setCurrentFrame(
           getNewFrame(animation.frameCount, animation.currentFrame, -1),
         );
         break;
 
       case "first":
-        animation.setAnimationState(false);
+        animation.setAnimationState("paused");
         animation.setCurrentFrame(
           getNewFrame(animation.frameCount, animation.frameCount - 1),
         );
         break;
 
       case "last":
-        animation.setAnimationState(false);
+        animation.setAnimationState("paused");
         animation.setCurrentFrame(getNewFrame(animation.frameCount, 0));
         break;
     }
@@ -100,7 +100,9 @@ const AnimationControls = () => {
     // console.log(code);
     switch (code) {
       case "Space":
-        return animation.animationState === false ? "play" : "pause";
+        return animation.animationState === ("paused" || "loading")
+          ? "play"
+          : "pause";
       case "Comma":
         return "prev";
       case "Period":
@@ -157,7 +159,7 @@ const AnimationControls = () => {
         ? 2000
         : 1000 / animation.frameRate;
 
-    if (animation.animationState === true) {
+    if (animation.animationState === "playing") {
       setLoopID(
         setInterval(
           () =>
@@ -191,9 +193,11 @@ const AnimationControls = () => {
         className="flex items-center justify-center rounded-none border border-black bg-teal-700 text-white first-of-type:rounded-s-md last-of-type:rounded-e-md hover:cursor-pointer hover:bg-teal-500"
       />
     );
-    if (command === "play" && animation.animationState === true) {
+    if (command === "play" && animation.animationState === "playing") {
       return "";
-    } else if (command === "pause" && animation.animationState === false) {
+    } else if (command === "play" && animation.animationState === "loading") {
+      return "";
+    } else if (command === "pause" && animation.animationState === "paused") {
       return "";
     } else {
       return button;

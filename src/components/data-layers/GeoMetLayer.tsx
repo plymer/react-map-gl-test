@@ -12,25 +12,15 @@ import {
 import useGeoMet from "../../hooks/useGeoMet";
 import { useGeoMetContext } from "../../contexts/geometContext";
 import { useAnimationContext } from "../../contexts/animationContext";
-import { Soup } from "lucide-react";
 
 interface Props {
   type: "satellite" | "radar";
   domain?: "west" | "east";
   product?: string;
   belowLayer?: string;
-  initialized: boolean;
-  dataFetching: boolean;
 }
 
-const GeoMetLayer = ({
-  type,
-  domain,
-  product,
-  belowLayer,
-  initialized,
-  dataFetching,
-}: Props) => {
+const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
   const animation = useAnimationContext();
   const geoMet = useGeoMetContext();
 
@@ -110,104 +100,42 @@ const GeoMetLayer = ({
   if (layerInfo) {
     return (
       <>
-        {layerInfo.urls.map((u, index) => {
+        {animation.animationState === ("paused" || "loading") ? (
           <Source
             {...source}
-            id={type + "-" + index}
-            key={index}
-            tiles={[u]}
-          />;
-        })}
-
-        <Layer
-          type="raster"
-          source={type + "-" + animation.currentFrame}
-          id={layerId + "static"}
-          beforeId={belowLayer}
-        />
+            key="0"
+            tiles={[layerInfo.urls[animation.currentFrame]]}
+          >
+            <Layer
+              type="raster"
+              source="source"
+              id={layerId + "-0"}
+              beforeId={belowLayer}
+            />
+          </Source>
+        ) : (
+          layerInfo.urls.map((u, index) => (
+            <Source {...source} key={index} tiles={[u]}>
+              <Layer
+                type="raster"
+                source="source"
+                id={layerId + "-" + index}
+                beforeId={belowLayer}
+                paint={{
+                  "raster-fade-duration": 0, // this literally doesn't do anything
+                  "raster-opacity":
+                    index === animation.currentFrame ||
+                    index === animation.currentFrame - 1 ||
+                    (type === "satellite" && index === 0)
+                      ? 1
+                      : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
+                }}
+              />
+            </Source>
+          ))
+        )}
       </>
     );
-
-    // <>
-    //   <Source
-    //     {...source}
-    //     key="0"
-    //     tiles={[layerInfo.urls[animation.currentFrame + 1]]}
-    //   >
-    //     <Layer
-    //       type="raster"
-    //       source="source"
-    //       id={layerId + "-next"}
-    //       beforeId={belowLayer}
-    //       paint={{ "raster-opacity": 0 }}
-    //     />
-    //   </Source>
-    //   <Source
-    //     {...source}
-    //     key="0"
-    //     tiles={[layerInfo.urls[animation.currentFrame]]}
-    //   >
-    //     <Layer
-    //       type="raster"
-    //       source="source"
-    //       id={layerId + "-0"}
-    //       beforeId={belowLayer}
-    //       paint={{ "raster-opacity": 1 }}
-    //     />
-    //   </Source>
-    //   <Source
-    //     {...source}
-    //     key="0"
-    //     tiles={[layerInfo.urls[animation.currentFrame - 1]]}
-    //   >
-    //     <Layer
-    //       type="raster"
-    //       source="source"
-    //       id={layerId + "-prev"}
-    //       beforeId={belowLayer}
-    //       paint={{ "raster-opacity": 1 }}
-    //     />
-    //   </Source>
-    // </>
-
-    // <>
-    //   {animation.animationState === false ? (
-    //     <Source
-    //       {...source}
-    //       key="0"
-    //       tiles={[layerInfo.urls[animation.currentFrame]]}
-    //     >
-    //       <Layer
-    //         type="raster"
-    //         source="source"
-    //         id={layerId + "-static"}
-    //         beforeId={belowLayer}
-    //       />
-    //     </Source>
-    //   ) : (
-    //     ""
-    //   )}
-
-    //   {layerInfo.urls.map((u, index) => (
-    //     <Source {...source} key={index} tiles={[u]}>
-    //       <Layer
-    //         type="raster"
-    //         source="source"
-    //         id={layerId + "-" + index}
-    //         beforeId={belowLayer}
-    //         paint={{
-    //           "raster-fade-duration": 0, // this literally doesn't do anything
-    //           "raster-opacity":
-    //             index === animation.currentFrame ||
-    //             index === animation.currentFrame - 1 ||
-    //             (type === "satellite" && index === 0)
-    //               ? 1
-    //               : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
-    //         }}
-    //       />
-    //     </Source>
-    //   ))}
-    // </>
   }
 };
 
