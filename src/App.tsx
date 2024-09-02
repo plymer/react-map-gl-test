@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Map, { useMap } from "react-map-gl/maplibre";
+import Map, { Layer, Source } from "react-map-gl/maplibre";
 import { AttributionControl } from "react-map-gl";
 import { StyleSpecification } from "maplibre-gl";
 
@@ -12,6 +12,7 @@ import "./App.css";
 
 // components
 import LightningLayer from "./components/data-layers/LightningLayer";
+import GeoMetLayer from "./components/data-layers/GeoMetLayer";
 import MapStatusBar from "./components/ui/MapStatusBar";
 import MapControlsBar from "./components/ui/MapControlsBar";
 import SynchroClock from "./components/SynchroClock";
@@ -23,14 +24,14 @@ import { MAP_BOUNDS, MAP_STYLE_URL } from "./utilities/constants";
 // contexts
 import { ClockContextProvider } from "./contexts/clockContext";
 import { useGeoMetContext } from "./contexts/geometContext";
-import GeoMetLayer from "./components/data-layers/GeoMetLayer";
+import { useAnimationContext } from "./contexts/animationContext";
 
 // set the default values for the map centre and the zoom level
 const DEFAULT_VIEW: View = { lon: -95, lat: 53, zoom: 3.25 };
 
 function App() {
   const geoMetContext = useGeoMetContext();
-  const { current: map } = useMap();
+  const animation = useAnimationContext();
 
   const getStyle = () =>
     axios
@@ -76,17 +77,20 @@ function App() {
           // we turn the loading spinner off when the map isn't doing anything
           setIsLoading(false);
           // this will only get called once the very first onIdle is called so that we can say that we have initialized the map with the first rendered images
-          setInitializer(
-            setTimeout(() => {
-              setMapInitialized(true);
-            }, 2000),
-          );
+
+          setMapInitialized(true);
+          // setInitializer(
+          //   setTimeout(() => {
+          //     setMapInitialized(true);
+          //   }, 2000),
+          // );
         }}
         onMove={
           /* update our map-center lat-lon and zoom whenever we move the map view */
           (e) => {
             setMapInitialized(false);
-            clearTimeout(initializer);
+            animation.setAnimationState(false);
+            // clearTimeout(initializer);
             setLat(e.viewState.latitude);
             setLon(e.viewState.longitude);
             setZoom(e.viewState.zoom);
@@ -101,6 +105,7 @@ function App() {
             product={geoMetContext.radarProduct}
             initialized={mapInitialized}
             belowLayer="layer-lightning-0"
+            dataFetching={isLoading}
           />
         ) : (
           ""
@@ -112,6 +117,7 @@ function App() {
           domain="west"
           initialized={mapInitialized}
           belowLayer="layer-radar-0"
+          dataFetching={isLoading}
         />
         <GeoMetLayer
           type="satellite"
@@ -119,6 +125,7 @@ function App() {
           domain="east"
           initialized={mapInitialized}
           belowLayer="layer-radar-0"
+          dataFetching={isLoading}
         />
 
         <AttributionControl compact position="top-right" />
