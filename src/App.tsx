@@ -42,12 +42,16 @@ function App() {
     queryFn: getStyle,
   });
 
+  // controls the state of the loading spinner
   const [isLoading, setIsLoading] = useState(false);
+  // communicates that the map is has fully loaded it's 'initial' state
   const [mapInitialized, setMapInitialized] = useState(false);
+  // the timeout object that is created when we idle for 2 seconds
+  const [initializer, setInitializer] = useState<NodeJS.Timeout>();
+  // map viewstate is CONTROLLED in this app
   const [lat, setLat] = useState(DEFAULT_VIEW.lat);
   const [lon, setLon] = useState(DEFAULT_VIEW.lon);
   const [zoom, setZoom] = useState(DEFAULT_VIEW.zoom);
-  const [initializer, setInitializer] = useState<NodeJS.Timeout>();
 
   return (
     <>
