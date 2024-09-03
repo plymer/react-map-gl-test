@@ -81,7 +81,7 @@ function App() {
         onMove={
           /* update our map-center lat-lon and zoom whenever we move the map view */
           (e) => {
-            animation.setAnimationState("paused");
+            // animation.setAnimationState("paused");
 
             setLat(e.viewState.latitude);
             setLon(e.viewState.longitude);
