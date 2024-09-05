@@ -14,7 +14,7 @@ import LightningLayer from "./components/data-layers/LightningLayer";
 import GeoMetLayer from "./components/data-layers/GeoMetLayer";
 import MapStatusBar from "./components/ui/MapStatusBar";
 import MapControlsBar from "./components/ui/MapControlsBar";
-import SynchroClock from "./components/SynchroClock";
+import SynchroClock from "./components/other/SynchroClock";
 
 // helpers
 import { View } from "./lib/types";
