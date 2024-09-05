@@ -72,7 +72,7 @@ August 14, 2024
 - [React Icons](https://react-icons.github.io/react-icons/)
 - [Maputnik](https://maplibre.org/maputnik/)
 
-## Build and Deploy
+## Build and Deploy:
 
 1. Clone this repository
 2. `cd` into the directory containing the cloned repo
@@ -81,3 +81,10 @@ August 14, 2024
 5. To build:
    - For deploying on `weg-dv`, run `npm run build-dv` and copy `dist` contents to `~pimiskernr/react-map-test`
    - For deploying to elsewhere, run `npm run build` and copy the `dist` to the server's `public_html` directory
+
+## Useful Tools & Links:
+
+- [Converting Hex to HSL colours](https://htmlcolors.com/hex-to-hsl)
+- [Tailwind Colours](https://tailwindcss.com/docs/customizing-colors)
+- [Data-driven styling](https://maplibre.org/maplibre-gl-js/docs/examples/data-driven-lines/)
+- [Expressions for data-driven styling](https://maplibre.org/maplibre-style-spec/expressions/)
