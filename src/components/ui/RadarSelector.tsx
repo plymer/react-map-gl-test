@@ -1,6 +1,6 @@
 import Button from "./Button";
 
-import { Switch } from "./switch";
+import { Switch } from "./Switch";
 import { useGeoMetContext } from "@/contexts/geometContext";
 
 const RadarSelector = () => {

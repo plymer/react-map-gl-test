@@ -1,7 +1,7 @@
 import AnimationControls from "./AnimationControls";
 import RadarSelector from "./RadarSelector";
 import SatChannelSelector from "./SatChannelSelector";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./Tabs";
 
 const MapControlsBar = () => {
   return (
