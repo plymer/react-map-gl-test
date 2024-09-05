@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import type { RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
-import { LayerDetails } from "../../utilities/types";
+import { LayerDetails } from "../../lib/types";
 import {
   GOES_EAST_BOUNDS,
   GOES_WEST_BOUNDS,
   MAP_BOUNDS,
-} from "../../utilities/constants";
+} from "../../lib/constants";
 
 import useGeoMet from "../../hooks/useGeoMet";
 import { useGeoMetContext } from "../../contexts/geometContext";
@@ -79,24 +79,10 @@ const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
   - we are having a poor UX with this implementation because it is drawing the Zero'th layer first as it is loading all of the sources, which is fine if you are looking at 3-hour-old data by default
   - we need to figure out how to re-order the layers such that the animation.frameCount - 1'th layer is drawn at the top and updates first
 
-  ------ what if we use a dummy layer with no data inside that we reference in the 'beforeId' section so that when the animationFrame is referenced the appropriate data is 'floated' to the top of the stack
-              NOPE DOESNT WORK
-
--------  what if we split up the layerInfo.urls array at the index of the current frame, and then stick it back together with the current frame as the Zero'th item
-              NOPE DOESNT WORK
-
-------- what if we show a static layer when the map is not animating (i think we've tried this once before and it was ugly)
-              THIS WORKS, BUT IS VERY SLOW / POOR UX (CHECKERBOARD)
-
-------- what if we use a FRAME BUFFER approach (like the Finns do with their MeteoC weather map project)
-              THIS BARELY WORKS, BUT IS HORRIBLY SLOW / TERRIBLE UX
-
-------- what if we define a bunch of sources and then apply them to layers? I don't know if that works this way
-              THIS IS WORKING INSOFAR AS IT ISNT THROWING MASSIVE ERRORS AND ITS LOOKING FOR THE RIGHT SOURCES ITS JUST NOT DRAWING ANYTHING
-
-
   */
 
+  // TODO :: create dummy layer that can act as a reference for other layers when we add/remove data from the map
+  //           in order to preserve layer data order
   if (layerInfo) {
     return (
       <>
