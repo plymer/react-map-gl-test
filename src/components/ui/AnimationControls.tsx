@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import AnimationControlButton from "./AnimationControlButton";
 import { useAnimationContext } from "../../contexts/animationContext";
 
-import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
+import { makeISOTimeStamp } from "../../utilities/geoMetSetup";
 import { Slider } from "./slider";
 // import { NUM_HRS_DATA } from "@/utilities/constants";
 

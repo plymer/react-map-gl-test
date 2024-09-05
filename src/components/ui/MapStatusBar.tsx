@@ -1,4 +1,4 @@
-import { makeISOTimeStamp } from "../../utilities/GeoMetSetup";
+import { makeISOTimeStamp } from "../../utilities/geoMetSetup";
 import { useClockContext } from "../../contexts/clockContext";
 
 import { LoadingSpinner } from "./LoadingSpinner";
