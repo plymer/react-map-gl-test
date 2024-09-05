@@ -16,11 +16,14 @@ August 14, 2024
 - [x] Add a clock showing current time and date
 - [x] Map center coordinate display
   - [ ] Need to make them fixed-width font
+  - [ ] Change the coordinate display to show cursor position on the map
 - [x] Enable map boundaries
-- [x] Create `utilities/constants.ts` file which holds static data for the app
+- [x] Create `lib/constants.ts` file which holds static data for the app
 - [ ] Add static data to the map tiles
   - [x] Bedposts
   - [ ] TAF Site locations (w/ 5nm ring)
+  - [ ] GFA Boundaries
+  - [ ] FIR Boundaries
 
 ### Animation:
 
@@ -42,11 +45,8 @@ August 14, 2024
     - GeoMet data is in 6-minute bins, which will require us to normalize the data across the 10-minute bins that are used for
 - Lightning
   - [x] Create Lightning Layer
-  - [ ] Create hook for lightning fetch
-  - [ ] Add CLDN data from DMS
-    - In current WxMap implementation, DMS is queried and all lightning data is being handled by the **client**
-    - I am proposing and _strongly_ recommending that we move this DMS query/data formatting logic to the server
-      - I have created a Python script to perform parallel downloads of the lightning data from the store at `hubwx/data/shared/lightning/`, which then parses the lightning strikes into a GeoJSON Feature Collection which can be easily displayed on MapLibre/MapBox GL maps
+  - [ ] Rework lightning data pre-processing on the server
+  - [ ] Create custom hook for lightning fetch
 - Surface Obs
   - [ ] Add surface observations (re-use as much drawing logic from exisiting WxMap project as possible)
   - First iteration should just be a popup marker for each site in order to build some base geo-located point data (for re-use in Webcam project)
@@ -57,11 +57,10 @@ August 14, 2024
       - not sure of what the limitations are for size etc
       - I have SVG files for all wind barbs, wx symbols, etc from a [repo](https://www.github.com/plymer/wx-symbols)
 - PIREPS
-  - [ ] Add PIREPs
-    - [ ] Set validity length of data
+  - [ ] Add PIREPs, display for 1 hour after issuance
 - SIGMET/AIRMET
   - [ ] Add SIGMET/AIRMET display with initial positions
-  - [ ] Calculate motion and evolution
+  - [ ] Create motion vector info to display up-to-date position
 
 ## Major Project Dependencies:
 
