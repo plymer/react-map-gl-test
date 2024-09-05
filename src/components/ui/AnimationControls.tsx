@@ -190,7 +190,6 @@ const AnimationControls = () => {
         key={index}
         type={command}
         onClick={() => handleClick(command)}
-        className="flex items-center justify-center rounded-none border border-black bg-teal-700 text-white first-of-type:rounded-s-md last-of-type:rounded-e-md hover:cursor-pointer hover:bg-teal-500"
       />
     );
     if (command === "play" && animation.animationState === "playing") {

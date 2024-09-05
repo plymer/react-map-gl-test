@@ -10,17 +10,16 @@ import Button from "./Button";
 
 interface Props {
   onClick: () => void;
-  className: string;
   type: string;
 }
 
-const AnimationControlButton = ({ onClick, type, className }: Props) => {
+const AnimationControlButton = ({ onClick, type }: Props) => {
   return (
     <Button
       id={type}
+      type="button"
       onClick={onClick}
-      className={className}
-      variant={"animation"}
+      // variant={"animation"}
     >
       {type === "last" ? <MdFirstPage className="h-6 w-6" /> : ""}
       {type === "prev" ? <MdNavigateBefore className="h-6 w-6" /> : ""}
@@ -28,6 +27,7 @@ const AnimationControlButton = ({ onClick, type, className }: Props) => {
       {type === "pause" ? <MdPause className="h-6 w-6" /> : ""}
       {type === "next" ? <MdNavigateNext className="h-6 w-6" /> : ""}
       {type === "first" ? <MdLastPage className="h-6 w-6" /> : ""}
+      <span className="sr-only">{type}</span>
     </Button>
   );
 };

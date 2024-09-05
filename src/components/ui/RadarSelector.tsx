@@ -24,7 +24,7 @@ const RadarSelector = () => {
     <div className="flex flex-row justify-around">
       <div>
         <Switch
-          className="data-[state=checked]:bg-teal-700"
+          className=""
           id="radar-toggle"
           checked={radar.showRadar}
           onCheckedChange={(e) => radar.setShowRadar!(e)}
@@ -38,7 +38,7 @@ const RadarSelector = () => {
           onClick={() => {
             changeRadarMode("rain");
           }}
-          className="flex items-center justify-center rounded-none border border-black bg-teal-700 text-white first-of-type:rounded-s-md last-of-type:rounded-e-md hover:cursor-pointer hover:bg-teal-500"
+          disabled={radar.radarProduct === "RRAI" ? true : false}
         >
           Rain
         </Button>
@@ -46,7 +46,7 @@ const RadarSelector = () => {
           onClick={() => {
             changeRadarMode("snow");
           }}
-          className="flex items-center justify-center rounded-none border border-black bg-teal-700 text-white first-of-type:rounded-s-md last-of-type:rounded-e-md hover:cursor-pointer hover:bg-teal-500"
+          disabled={radar.radarProduct === "RSNO" ? true : false}
         >
           Snow
         </Button>
