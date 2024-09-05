@@ -16,7 +16,12 @@ interface Props {
 
 const AnimationControlButton = ({ onClick, type, className }: Props) => {
   return (
-    <Button id={type} onClick={onClick} className={className}>
+    <Button
+      id={type}
+      onClick={onClick}
+      className={className}
+      variant={"animation"}
+    >
       {type === "last" ? <MdFirstPage className="h-6 w-6" /> : ""}
       {type === "prev" ? <MdNavigateBefore className="h-6 w-6" /> : ""}
       {type === "play" ? <MdPlayArrow className="h-6 w-6" /> : ""}
