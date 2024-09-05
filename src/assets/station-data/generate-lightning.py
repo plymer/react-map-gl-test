@@ -83,8 +83,8 @@ searchURLs = []
 now = datetime.now(timezone.utc)
 
 # looking for t minutes of data, with a bin size of dt minutes
-t = 10
-dt = 1
+t = 3 * 60
+dt = 2
 timeSteps = round(t / dt)
 i = 0
 while (i < timeSteps):
@@ -128,7 +128,7 @@ fc = FeatureCollection(g)
 
 # this is fine for now, however, we will want to split these lightning events into 5-minute chunks
 # probably using FeatureCollections with a time property that we can reference later
-with open(path + "/lightning.geojson", "w") as file:
+with open(path + "/lightning.json", "w") as file:
     file.write(str(fc))
 
 # print("Lightning data saved in " + fileName + " after " + str(timeElapsed))

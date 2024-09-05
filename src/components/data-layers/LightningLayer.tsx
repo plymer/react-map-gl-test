@@ -1,7 +1,11 @@
 // 2024.09.05 -- this will eventually be rolled into a generalized 'point data' layer and fed live data
 //            -- need to incorporate turf library to draw properly-sized circles of spatial dimensions
 
+// [data-driven styling](https://maplibre.org/maplibre-gl-js/docs/examples/data-driven-lines/)
+// [expressions for data-driven styling](https://maplibre.org/maplibre-style-spec/expressions/#match)
+
 import { Layer, Source } from "react-map-gl";
+// import * as json from "../../assets/station-data/lightning.json";
 
 interface Props {
   belowLayer?: string;
