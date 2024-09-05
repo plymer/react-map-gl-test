@@ -1,3 +1,6 @@
+// 2024.09.05 -- this will eventually be rolled into a generalized 'point data' layer and fed live data
+//            -- need to incorporate turf library to draw properly-sized circles of spatial dimensions
+
 import { Layer, Source } from "react-map-gl";
 
 interface Props {
