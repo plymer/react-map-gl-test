@@ -1,7 +1,7 @@
 import axios from "axios";
-import { GEOMET_GETCAPABILITIES, GEOMET_GETMAP } from "../utilities/constants";
+import { GEOMET_GETCAPABILITIES, GEOMET_GETMAP } from "../lib/constants";
 import { useQuery } from "@tanstack/react-query";
-import { LayerDetails } from "../utilities/types";
+import { LayerDetails } from "../lib/types";
 import { generateTimeSteps, parseTimes } from "../utilities/GeoMetSetup";
 
 function useGeomet(layer: string) {

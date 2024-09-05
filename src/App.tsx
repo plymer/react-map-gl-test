@@ -8,7 +8,6 @@ import { StyleSpecification } from "maplibre-gl";
 
 // css
 import "maplibre-gl/dist/maplibre-gl.css";
-import "./App.css";
 
 // components
 import LightningLayer from "./components/data-layers/LightningLayer";
@@ -18,8 +17,8 @@ import MapControlsBar from "./components/ui/MapControlsBar";
 import SynchroClock from "./components/SynchroClock";
 
 // helpers
-import { View } from "./utilities/types";
-import { MAP_BOUNDS, MAP_STYLE_URL } from "./utilities/constants";
+import { View } from "./lib/types";
+import { MAP_BOUNDS, MAP_STYLE_URL } from "./lib/constants";
 
 // contexts
 import { ClockContextProvider } from "./contexts/clockContext";

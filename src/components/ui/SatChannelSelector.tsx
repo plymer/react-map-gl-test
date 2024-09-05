@@ -1,4 +1,4 @@
-import { SATELLITE_CHANNELS } from "../../utilities/constants";
+import { SATELLITE_CHANNELS } from "../../lib/constants";
 
 import { useGeoMetContext } from "../../contexts/geometContext";
 
