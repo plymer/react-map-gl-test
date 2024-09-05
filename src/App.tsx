@@ -105,13 +105,21 @@ function App() {
           type="satellite"
           product={geoMetContext.subProduct}
           domain="west"
-          belowLayer="layer-radar-0"
+          belowLayer={
+            geoMetContext.showRadar === true
+              ? "layer-radar-0"
+              : "layer-lightning-0"
+          }
         />
         <GeoMetLayer
           type="satellite"
           product={geoMetContext.subProduct}
           domain="east"
-          belowLayer="layer-radar-0"
+          belowLayer={
+            geoMetContext.showRadar === true
+              ? "layer-radar-0"
+              : "layer-lightning-0"
+          }
         />
 
         <AttributionControl compact position="top-right" />
