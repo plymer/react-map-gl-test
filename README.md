@@ -71,3 +71,13 @@ August 14, 2024
 - [Tailwind CSS](https://tailwindcss.com/)
 - [React Icons](https://react-icons.github.io/react-icons/)
 - [Maputnik](https://maplibre.org/maputnik/)
+
+## Build and Deploy
+
+1. Clone this repository
+2. `cd` into the directory containing the cloned repo
+3. Run the command `npm install`
+4. To test, run the command `npm run dev` and visit [http://localhost:5173/](http://localhost:5173/)
+5. To build:
+   - For deploying on `weg-dv`, run `npm run build-dv` and copy `dist` contents to `~pimiskernr/react-map-test`
+   - For deploying to elsewhere, run `npm run build` and copy the `dist` to the server's `public_html` directory
