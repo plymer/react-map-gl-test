@@ -3,8 +3,7 @@ import { useClockContext } from "@/contexts/clockContext";
 
 import { LoadingSpinner } from "./LoadingSpinner";
 
-import { FaGlobe } from "react-icons/fa";
-import { FaRegClock } from "react-icons/fa6";
+import { Globe, Clock } from "lucide-react";
 
 interface Props {
   center?: number[];
@@ -21,7 +20,7 @@ const MapStatusBar = ({ center, loadState }: Props) => {
       ) : (
         <div className="inline-block h-6 w-6"></div>
       )}
-      <FaGlobe className="ms-2 inline-block h-6 w-6" />
+      <Globe className="ms-2 inline-block h-6 w-6" />
       {center ? (
         <span className="mx-2 font-mono">
           {Math.abs(parseFloat(center[1].toFixed(2)))}
@@ -32,7 +31,7 @@ const MapStatusBar = ({ center, loadState }: Props) => {
       ) : (
         ""
       )}
-      <FaRegClock className="me-2 inline-block h-6 w-6" />
+      <Clock className="me-2 inline-block h-6 w-6" />
       <span className="font-mono">
         {makeISOTimeStamp(clockContext.time, "display")}
       </span>

@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import type { RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
-import { LayerDetails } from "../../lib/types";
+import { LayerDetails } from "@/lib/types";
 import {
   GOES_EAST_BOUNDS,
   GOES_WEST_BOUNDS,
   MAP_BOUNDS,
-} from "../../lib/constants";
+} from "@/lib/constants";
 
-import useGeoMet from "../../hooks/useGeoMet";
-import { useGeoMetContext } from "../../contexts/geometContext";
-import { useAnimationContext } from "../../contexts/animationContext";
+import useGeoMet from "@/hooks/useGeoMet";
+import { useGeoMetContext } from "@/contexts/geometContext";
+import { useAnimationContext } from "@/contexts/animationContext";
 
 interface Props {
   type: "satellite" | "radar";

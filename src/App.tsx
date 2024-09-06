@@ -10,20 +10,22 @@ import { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 // components
-import LightningLayer from "./components/data-layers/LightningLayer";
-import GeoMetLayer from "./components/data-layers/GeoMetLayer";
-import MapStatusBar from "./components/ui/MapStatusBar";
-import MapControlsBar from "./components/ui/MapControlsBar";
-import SynchroClock from "./components/other/SynchroClock";
+import LightningLayer from "@/components/data-layers/LightningLayer";
+import GeoMetLayer from "@/components/data-layers/GeoMetLayer";
+import MapStatusBar from "@/components/ui/MapStatusBar";
+import SynchroClock from "@/components/other/SynchroClock";
 
 // helpers
-import { View } from "./lib/types";
-import { MAP_BOUNDS, MAP_STYLE_URL } from "./lib/constants";
+import { View } from "@/lib/types";
+import { MAP_BOUNDS, MAP_STYLE_URL } from "@/lib/constants";
 
 // contexts
-import { ClockContextProvider } from "./contexts/clockContext";
-import { useGeoMetContext } from "./contexts/geometContext";
-import { useAnimationContext } from "./contexts/animationContext";
+import { ClockContextProvider } from "@/contexts/clockContext";
+import { useGeoMetContext } from "@/contexts/geometContext";
+import { useAnimationContext } from "@/contexts/animationContext";
+import WeatherControls from "@/components/ui/WeatherControls";
+import AnimationControls from "@/components/ui/AnimationControls";
+import DummyDataLayer from "@/components/data-layers/DummyDataLayer";
 
 // set the default values for the map centre and the zoom level
 const DEFAULT_VIEW: View = { lon: -95, lat: 53, zoom: 3.25 };
@@ -72,7 +74,8 @@ function App() {
         onIdle={() => {
           // we turn the loading spinner off when the map isn't doing anything
           setIsLoading(false);
-          // this will only get called once the very first onIdle is called so that we can say that we have initialized the map with the first rendered images
+
+          // once no more source data is loading, allow the map to transistion to animating
           animation.animationState === "loading"
             ? animation.setAnimationState("playing")
             : "";
@@ -80,21 +83,32 @@ function App() {
         onMove={
           /* update our map-center lat-lon and zoom whenever we move the map view */
           (e) => {
-            // animation.setAnimationState("paused");
-
             setLat(e.viewState.latitude);
             setLon(e.viewState.longitude);
             setZoom(e.viewState.zoom);
           }
         }
       >
-        <LightningLayer belowLayer="wateroutline" />
+        {/* Set up the dummy layers that help us maintain layer order when we toggle layers on and off */}
+        <DummyDataLayer id="layer-lightning-dummy" belowLayer="wateroutline" />
+        <DummyDataLayer
+          id="layer-radar-dummy"
+          belowLayer="layer-lightning-dummy"
+        />
+        <DummyDataLayer
+          id="layer-satellite-dummy"
+          belowLayer="layer-radar-dummy"
+        />
+
+        {/* Set up the data layers we will display on the map. There should be one dummy layer per display data type. */}
+
+        <LightningLayer belowLayer="layer-lightning-dummy" />
 
         {geoMetContext.showRadar === true ? (
           <GeoMetLayer
             type="radar"
             product={geoMetContext.radarProduct}
-            belowLayer="layer-lightning-0"
+            belowLayer="layer-radar-dummy"
           />
         ) : (
           ""
@@ -104,21 +118,13 @@ function App() {
           type="satellite"
           product={geoMetContext.subProduct}
           domain="west"
-          belowLayer={
-            geoMetContext.showRadar === true
-              ? "layer-radar-0"
-              : "layer-lightning-0"
-          }
+          belowLayer="layer-satellite-dummy"
         />
         <GeoMetLayer
           type="satellite"
           product={geoMetContext.subProduct}
           domain="east"
-          belowLayer={
-            geoMetContext.showRadar === true
-              ? "layer-radar-0"
-              : "layer-lightning-0"
-          }
+          belowLayer="layer-satellite-dummy"
         />
 
         <AttributionControl compact position="top-right" />
@@ -129,7 +135,8 @@ function App() {
         <MapStatusBar center={[lon, lat]} loadState={isLoading} />
       </ClockContextProvider>
 
-      <MapControlsBar />
+      <AnimationControls />
+      <WeatherControls />
     </>
   );
 }

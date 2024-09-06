@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import AnimationControlButton from "./AnimationControlButton";
-import { useAnimationContext } from "../../contexts/animationContext";
+import { useAnimationContext } from "@/contexts/animationContext";
 
 import { makeISOTimeStamp } from "@/lib/utils";
 import { Slider } from "./Slider";
@@ -217,7 +217,7 @@ const AnimationControls = () => {
   // const sliderStep = (NUM_HRS_DATA * 60 * 60 * 1000) / animation.timeStep;
 
   return (
-    <div className="inline-block">
+    <div className="absolute bottom-0 left-0 grid grid-cols-1 rounded-tr-lg border-b border-r border-black bg-gray-800 p-2 text-white">
       <div className="flex justify-between font-mono">
         <span key="start">{startTime}</span>
         <span key="end">{endTime}</span>
