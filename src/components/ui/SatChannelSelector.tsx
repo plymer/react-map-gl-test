@@ -1,6 +1,6 @@
-import { SATELLITE_CHANNELS } from "../../lib/constants";
+import { SATELLITE_CHANNELS } from "@/lib/constants";
 
-import { useGeoMetContext } from "../../contexts/geometContext";
+import { useGeoMetContext } from "@/contexts/geometContext";
 
 const SatChannelSelector = () => {
   const satelliteContext = useGeoMetContext();

@@ -1,5 +1,4 @@
 import Button from "./Button";
-
 import { Switch } from "./Switch";
 import { useGeoMetContext } from "@/contexts/geometContext";
 
