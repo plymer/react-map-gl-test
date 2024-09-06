@@ -69,7 +69,7 @@ August 14, 2024
 - [Tanstack Query](https://tanstack.com/query/latest/docs/framework/react/overview)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [React Icons](https://react-icons.github.io/react-icons/)
+- [Lucide-React](https://lucide.dev/icons/)
 - [Maputnik](https://maplibre.org/maputnik/)
 
 ## Build and Deploy:
