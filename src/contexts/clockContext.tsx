@@ -1,5 +1,5 @@
 import { createContext, useMemo, useState } from "react";
-import useContextWrapper from "../hooks/useContextWrapper";
+import useContextWrapper from "@/hooks/useContextWrapper";
 
 export interface IClockContext {
   time: number;
