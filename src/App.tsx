@@ -23,9 +23,9 @@ import { MAP_BOUNDS, MAP_STYLE_URL } from "@/lib/constants";
 import { ClockContextProvider } from "@/contexts/clockContext";
 import { useGeoMetContext } from "@/contexts/geometContext";
 import { useAnimationContext } from "@/contexts/animationContext";
-import WeatherControls from "@/components/ui/WeatherControls";
-import AnimationControls from "@/components/ui/AnimationControls";
+
 import DummyDataLayer from "@/components/data-layers/DummyDataLayer";
+import MapControls from "@/components/ui/MapControls";
 
 // set the default values for the map centre and the zoom level
 const DEFAULT_VIEW: View = { lon: -95, lat: 53, zoom: 3.25 };
@@ -135,8 +135,7 @@ function App() {
         <MapStatusBar center={[lon, lat]} loadState={isLoading} />
       </ClockContextProvider>
 
-      <AnimationControls />
-      <WeatherControls />
+      <MapControls />
     </>
   );
 }

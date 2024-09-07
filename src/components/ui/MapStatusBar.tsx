@@ -1,9 +1,7 @@
 import { makeISOTimeStamp } from "@/lib/utils";
 import { useClockContext } from "@/contexts/clockContext";
 
-import { LoadingSpinner } from "./LoadingSpinner";
-
-import { Globe, Clock } from "lucide-react";
+import { Globe, Clock, Loader2 } from "lucide-react";
 
 interface Props {
   center?: number[];
@@ -16,7 +14,7 @@ const MapStatusBar = ({ center, loadState }: Props) => {
   return (
     <div className="absolute left-0 top-0 flex rounded-br-lg border-b border-r border-black bg-gray-800 p-2 align-middle text-white">
       {loadState ? (
-        <LoadingSpinner className="inline-block h-6 w-6 border-2 border-t-2 border-t-slate-600" />
+        <Loader2 className="animate-spin" />
       ) : (
         <div className="inline-block h-6 w-6"></div>
       )}

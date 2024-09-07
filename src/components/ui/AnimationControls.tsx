@@ -217,8 +217,8 @@ const AnimationControls = () => {
   // const sliderStep = (NUM_HRS_DATA * 60 * 60 * 1000) / animation.timeStep;
 
   return (
-    <div className="absolute bottom-0 left-0 grid grid-cols-1 rounded-tr-lg border-b border-r border-black bg-gray-800 p-2 text-white">
-      <div className="flex justify-between font-mono">
+    <div className="grid grid-cols-1">
+      <div className="mt-2 flex justify-between font-mono">
         <span key="start">{startTime}</span>
         <span key="end">{endTime}</span>
       </div>
