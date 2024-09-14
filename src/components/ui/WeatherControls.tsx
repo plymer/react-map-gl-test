@@ -10,10 +10,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { Switch } from "@/components/ui/Switch";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/Label";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { MapIcon } from "lucide-react";
 
 import { SATELLITE_CHANNELS } from "@/lib/constants";
