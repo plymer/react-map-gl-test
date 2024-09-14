@@ -13,15 +13,27 @@ interface Props {
   type: string;
 }
 
+const buttonIcons = (type: string) => {
+  switch (type) {
+    case "last":
+      return <ChevronFirst />;
+    case "prev":
+      return <ChevronLeft />;
+    case "play":
+      return <Play />;
+    case "pause":
+      return <Pause />;
+    case "next":
+      return <ChevronRight />;
+    case "first":
+      return <ChevronLast />;
+  }
+};
+
 const AnimationControlButton = ({ onClick, type }: Props) => {
   return (
     <Button id={type} type="button" onClick={onClick}>
-      {type === "last" ? <ChevronFirst /> : ""}
-      {type === "prev" ? <ChevronLeft /> : ""}
-      {type === "play" ? <Play /> : ""}
-      {type === "pause" ? <Pause /> : ""}
-      {type === "next" ? <ChevronRight /> : ""}
-      {type === "first" ? <ChevronLast /> : ""}
+      {buttonIcons(type)}
       <span className="sr-only">{type}</span>
     </Button>
   );

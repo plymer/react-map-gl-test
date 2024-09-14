@@ -6,8 +6,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover";
+import { useState } from "react";
 
 const SiteSearch = () => {
+  // store the user form input as they type
+  const [searchParam, setSearchParam] = useState<string>();
+  // store the submitted user input once they hit the search button
+  const [siteID, setSiteID] = useState<string>();
+
   return (
     <div>
       <Popover>
@@ -22,11 +28,16 @@ const SiteSearch = () => {
         >
           <Input
             type="text"
-            placeholder=""
+            placeholder="3- or 4-letter ID"
             className="text-center uppercase"
             spellCheck={false}
+            maxLength={4}
+            minLength={3}
+            onChange={(e) => setSearchParam(e.target.value)}
           ></Input>
-          <Button className="ms-2">Search</Button>
+          <Button className="ms-2" onClick={() => setSiteID(searchParam)}>
+            Search
+          </Button>
         </PopoverContent>
       </Popover>
     </div>
