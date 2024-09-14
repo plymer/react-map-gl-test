@@ -88,3 +88,16 @@ August 14, 2024
 - [Tailwind Colours](https://tailwindcss.com/docs/customizing-colors)
 - [Data-driven styling](https://maplibre.org/maplibre-gl-js/docs/examples/data-driven-lines/)
 - [Expressions for data-driven styling](https://maplibre.org/maplibre-style-spec/expressions/)
+
+## Notes
+
+METAR retrieval
+
+- two modes: showing station plots / listing strings of METARs (plus TAF) for one site at a time
+  - station plots => time series of conditions for all sites
+    - make one http request for a large chunk of data for all sites, at all times OR do we do like for the GeoMet layer where we only initially grab the current conditions and then request everything else whenever we want to animate
+    - pre-process the data to map directly to flight categories out of the database (maybe even IN the database) so we can just apply data-driven styling on the map itself
+    - station IDs can actually be added as a layer in the basemap (so one less thing to have to draw procedurally)
+  - AMSAS-like display => time series of raw METARs for one site
+    - this should be easy, so long as we can query the db for a single site
+- [A tutorial on using React Router DOM](https://www.freecodecamp.org/news/how-to-use-urls-for-state-management-in-react/) for managing state in the URL (also shows a good example of how to handle a 'sub page' that gets its state from above and shows content)

@@ -23,7 +23,6 @@ import { MAP_BOUNDS, MAP_STYLE_URL } from "@/lib/constants";
 import { ClockContextProvider } from "@/contexts/clockContext";
 import { useGeoMetContext } from "@/contexts/geometContext";
 import { useAnimationContext } from "@/contexts/animationContext";
-
 import DummyDataLayer from "@/components/data-layers/DummyDataLayer";
 import MapControls from "@/components/ui/MapControls";
 
