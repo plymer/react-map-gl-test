@@ -1,7 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 
-const hostname = process.env.DB_HOSTNAME;
+// const hostname = process.env.DB_HOSTNAME;
 
-function getMETARs(siteID: string) {
-  console.log("hi:", siteID);
-}
+// function getMETARs(siteID: string) {
+//   console.log("hi:", siteID);
+// }

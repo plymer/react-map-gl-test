@@ -35,7 +35,12 @@ const SiteSearch = () => {
             minLength={3}
             onChange={(e) => setSearchParam(e.target.value)}
           ></Input>
-          <Button className="ms-2" onClick={() => setSiteID(searchParam)}>
+          <Button
+            className="ms-2"
+            onClick={() => {
+              setSiteID(searchParam), console.log(siteID);
+            }}
+          >
             Search
           </Button>
         </PopoverContent>
