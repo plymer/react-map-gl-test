@@ -18,7 +18,7 @@ import SynchroClock from "@/components/other/SynchroClock";
 import MapControls from "@/components/ui/MapControls";
 
 // helpers
-import { View } from "@/lib/types";
+import { LayerDetails, View } from "@/lib/types";
 import { MAP_BOUNDS } from "@/lib/constants";
 
 // contexts
@@ -33,7 +33,7 @@ function App() {
   const geoMetContext = useGeoMetContext();
   const animation = useAnimationContext();
 
-  const [layers, setLayers] = useState();
+  const [layers, setLayers] = useState<LayerDetails[]>();
 
   // controls the state of the loading spinner
   const [isLoading, setIsLoading] = useState(false);
@@ -57,10 +57,16 @@ function App() {
         maxBounds={MAP_BOUNDS}
         style={{ width: "100%", height: "100vh" }}
         mapStyle={basemap as StyleSpecification}
-        onSourceData={() => {
+        onSourceData={(e) => {
+          if (e.isSourceLoaded === false) {
+            console.log(e.sourceId, "is loading");
+          } else {
+            console.log(e.sourceId, "completed loading");
+          }
+
+          setIsLoading(true);
           // we set our 'isLoading' flag to true any time one of the layers in the map is loading data
           // this allows us to show the loading spinner active
-          setIsLoading(true);
         }}
         onIdle={() => {
           // we turn the loading spinner off when the map isn't doing anything

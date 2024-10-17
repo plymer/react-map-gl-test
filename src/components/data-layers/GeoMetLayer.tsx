@@ -56,6 +56,8 @@ const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
     refetch();
   }, [geoMet]);
 
+  const layerId = domain ? "layer-" + type + "-" + domain : "layer-" + type;
+
   const source: RasterSource = {
     type: "raster",
     tileSize: 256,
@@ -66,8 +68,6 @@ const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
           : GOES_EAST_BOUNDS
         : MAP_BOUNDS,
   };
-
-  const layerId = domain ? "layer-" + type + "-" + domain : "layer-" + type;
 
   /*
   rules for smooth animation:
@@ -81,47 +81,44 @@ const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
 
   */
 
-  // TODO :: create dummy layer that can act as a reference for other layers when we add/remove data from the map
-  //           in order to preserve layer data order
   if (layerInfo) {
-    return (
-      <>
-        {animation.animationState !== "playing" ? (
-          <Source
-            {...source}
-            key="0"
-            tiles={[layerInfo.urls[animation.currentFrame]]}
-          >
-            <Layer
-              type="raster"
-              source="source"
-              id={layerId + "-0"}
-              beforeId={belowLayer}
-            />
-          </Source>
-        ) : (
-          layerInfo.urls.map((u, index) => (
-            <Source {...source} key={index} tiles={[u]}>
-              <Layer
-                type="raster"
-                source="source"
-                id={layerId + "-" + index}
-                beforeId={belowLayer}
-                paint={{
-                  "raster-fade-duration": 0, // this literally doesn't do anything
-                  "raster-opacity":
-                    index === animation.currentFrame ||
-                    index === animation.currentFrame - 1 ||
-                    (type === "satellite" && index === 0)
-                      ? 1
-                      : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
-                }}
-              />
-            </Source>
-          ))
-        )}
-      </>
-    );
+    if (animation.animationState === "paused") {
+      return (
+        <Source
+          {...source}
+          id={layerId + "-0"}
+          key="0"
+          tiles={[layerInfo.urls[animation.currentFrame]]}
+        >
+          <Layer
+            type="raster"
+            source="source"
+            id={layerId + "-0"}
+            beforeId={belowLayer}
+          />
+        </Source>
+      );
+    } else {
+      return layerInfo.urls.map((u, index) => (
+        <Source {...source} key={index} tiles={[u]} id={layerId + "-" + index}>
+          <Layer
+            type="raster"
+            source="source"
+            id={layerId + "-" + index}
+            beforeId={belowLayer}
+            paint={{
+              "raster-fade-duration": 0, // this literally doesn't do anything
+              "raster-opacity":
+                index === animation.currentFrame ||
+                index === animation.currentFrame - 1 ||
+                (type === "satellite" && index === 0)
+                  ? 1
+                  : 0, // here, we want the current, the previous, and the very last frame to be preserved so that we don't get any flickering of the map background since the renderer does not repsect our fade-duration property
+            }}
+          />
+        </Source>
+      ));
+    }
   }
 };
 
