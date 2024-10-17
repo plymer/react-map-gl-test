@@ -165,10 +165,6 @@
           }
         ]
       }
-    },
-    "exa7u0oh7": {
-      "type": "vector",
-      "url": "https://localhost:3000/tilejson.json"
     }
   },
   "sprite": "https://openmaptiles.github.io/positron-gl-style/sprite",
