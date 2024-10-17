@@ -95,7 +95,10 @@ August 14, 2024
 - [AniMet](https://eccc-msc.github.io/msc-animet/?extent=-13733882,3940424,-6303626,10783308)
 
 - Functionapps: what language paradigm do we want to use for the backend stuff? Python? TypeScript?
+
   - Look up docs for "Build and Deploy X Webapps with Azure Pipelines"
+
+- Keep an eye out for the working being done on [react-maplibre](https://github.com/visgl/react-maplibre) as it looks like this will be the focus of the developers and will support the new MapLibre globe view model
 
 METAR retrieval
 
