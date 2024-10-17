@@ -1,14 +1,16 @@
 import { makeISOTimeStamp } from "@/lib/utils";
 import { useClockContext } from "@/contexts/clockContext";
 
-import { Globe, Clock, Loader2 } from "lucide-react";
+// import { Globe, Clock, Loader2 } from "lucide-react";
+import { Clock, Loader2 } from "lucide-react";
 
 interface Props {
   center?: number[];
   loadState: boolean;
 }
 
-const MapStatusBar = ({ center, loadState }: Props) => {
+// const MapStatusBar = ({ center, loadState }: Props) => {
+const MapStatusBar = ({ loadState }: Props) => {
   const clockContext = useClockContext();
 
   return (
@@ -18,8 +20,8 @@ const MapStatusBar = ({ center, loadState }: Props) => {
       ) : (
         <div className="inline-block h-6 w-6"></div>
       )}
-      <Globe className="ms-2 inline-block h-6 w-6" />
-      {center ? (
+      {/* <Globe className="ms-2 inline-block h-6 w-6" /> */}
+      {/* {center ? (
         <span className="mx-2 font-mono">
           {Math.abs(parseFloat(center[1].toFixed(2)))}
           {center[1] > 0 ? "°N" : "°S"}{" "}
@@ -28,8 +30,8 @@ const MapStatusBar = ({ center, loadState }: Props) => {
         </span>
       ) : (
         ""
-      )}
-      <Clock className="me-2 inline-block h-6 w-6" />
+      )} */}
+      <Clock className="mx-2 inline-block h-6 w-6" />
       <span className="font-mono">
         {makeISOTimeStamp(clockContext.time, "display")}
       </span>
