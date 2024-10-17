@@ -12,7 +12,7 @@ August 14, 2024
 ### General:
 
 - [x] Initialize map object
-- [x] Find open-source/unlimited map tiles
+- [x] Find open-source/unlimited map tiles (OpenFreeMap.org)
 - [x] Add a clock showing current time and date
 - [x] Map center coordinate display
   - [ ] Need to make them fixed-width font
@@ -71,6 +71,7 @@ August 14, 2024
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Lucide-React](https://lucide.dev/icons/)
 - [Maputnik](https://maplibre.org/maputnik/)
+- [OpenFreeMap](https://openfreemap.org/)
 
 ## Build and Deploy:
 
