@@ -28,7 +28,8 @@ export const GeoMetContextProvider = ({
   const [radarProduct, setRadarProduct] =
     useState<IGeoMetContext["radarProduct"]>("RRAI");
 
-  const [showRadar, setShowRadar] = useState<IGeoMetContext["showRadar"]>(true);
+  const [showRadar, setShowRadar] =
+    useState<IGeoMetContext["showRadar"]>(false);
 
   const value = useMemo(
     () => ({
