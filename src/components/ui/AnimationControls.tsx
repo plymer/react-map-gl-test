@@ -100,9 +100,8 @@ const AnimationControls = () => {
     // console.log(code);
     switch (code) {
       case "Space":
-        return animation.animationState === ("paused" || "loading")
-          ? "play"
-          : "pause";
+        if (animation.animationState === "paused" || "loading") return "play";
+        else return "pause";
       case "Comma":
         return "prev";
       case "Period":

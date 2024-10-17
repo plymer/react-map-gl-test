@@ -86,7 +86,7 @@ const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
   if (layerInfo) {
     return (
       <>
-        {animation.animationState === ("paused" || "loading") ? (
+        {animation.animationState !== "playing" ? (
           <Source
             {...source}
             key="0"
