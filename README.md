@@ -91,6 +91,11 @@ August 14, 2024
 
 ## Notes
 
+- [AniMet](https://eccc-msc.github.io/msc-animet/?extent=-13733882,3940424,-6303626,10783308)
+
+- Functionapps: what language paradigm do we want to use for the backend stuff? Python? TypeScript?
+  - Look up docs for "Build and Deploy X Webapps with Azure Pipelines"
+
 METAR retrieval
 
 - two modes: showing station plots / listing strings of METARs (plus TAF) for one site at a time

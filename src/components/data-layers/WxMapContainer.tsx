@@ -11,17 +11,9 @@ interface Props {
   zoom: number;
   type: "satellite" | "radar";
   domain?: "east" | "west";
-  product?: string;
 }
 
-export const WxMapContainer = ({
-  lat,
-  lon,
-  zoom,
-  type,
-  domain,
-  product,
-}: Props) => {
+export const WxMapContainer = ({ lat, lon, zoom, type, domain }: Props) => {
   const geoMetContext = useGeoMetContext();
   const animation = useAnimationContext();
 

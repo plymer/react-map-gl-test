@@ -51,6 +51,7 @@ function App() {
   const [lon, setLon] = useState(DEFAULT_VIEW.lon);
   const [zoom, setZoom] = useState(DEFAULT_VIEW.zoom);
 
+  // what if we make a MAP object for each layer of geomet data?
   return (
     <>
       <Map
