@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import { NUM_HRS_DATA } from "./constants";
+import { LayerDetails } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -87,4 +88,10 @@ export const generateTimeSteps = (
   }
 
   return output;
+};
+
+export const layerManager = (layers: LayerDetails[]) => {
+  layers.map((l, index) => {
+    console.log(l, index);
+  });
 };

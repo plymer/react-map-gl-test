@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { GEOMET_GETCAPABILITIES, GEOMET_GETMAP } from "@/lib/constants";
 
-import { LayerDetails } from "@/lib/types";
+import { DataParams } from "@/lib/types";
 import { generateTimeSteps, parseTimes } from "@/lib/utils";
 
 function useGeomet(layer: string) {
@@ -15,7 +15,7 @@ function useGeomet(layer: string) {
       .get<string>(GEOMET_GETCAPABILITIES + layer)
       .then((response) => response.data);
 
-    const details = parseTimes(data) as LayerDetails;
+    const details = parseTimes(data) as DataParams;
 
     const timeSteps = generateTimeSteps(
       details.timeStart,
@@ -30,7 +30,7 @@ function useGeomet(layer: string) {
 
     const output = { ...details, urls: productURLs };
 
-    return output as LayerDetails;
+    return output as DataParams;
   };
 
   return useQuery({

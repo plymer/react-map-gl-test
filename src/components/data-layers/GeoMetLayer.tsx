@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { RasterSource } from "react-map-gl/maplibre";
 import { Layer, Source } from "react-map-gl/maplibre";
 
-import { LayerDetails } from "@/lib/types";
+import { DataParams } from "@/lib/types";
 import {
   GOES_EAST_BOUNDS,
   GOES_WEST_BOUNDS,
@@ -35,11 +35,11 @@ const GeoMetLayer = ({ type, domain, product, belowLayer }: Props) => {
       geoMetSearchString = "RADAR_1KM_" + product;
   }
 
-  const [layerInfo, setLayerInfo] = useState<LayerDetails>();
+  const [layerInfo, setLayerInfo] = useState<DataParams>();
 
   const { data, fetchStatus, refetch } = useGeoMet(geoMetSearchString);
 
-  const updateTimes = (times: LayerDetails) => {
+  const updateTimes = (times: DataParams) => {
     setLayerInfo(times);
     animation.setEndTime(times.timeEnd);
     animation.setStartTime(times.timeStart);

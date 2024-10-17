@@ -33,6 +33,8 @@ function App() {
   const geoMetContext = useGeoMetContext();
   const animation = useAnimationContext();
 
+  const [layers, setLayers] = useState();
+
   // controls the state of the loading spinner
   const [isLoading, setIsLoading] = useState(false);
 
