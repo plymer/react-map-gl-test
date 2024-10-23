@@ -2,7 +2,7 @@ import { createContext, useMemo, useState } from "react";
 import useContextWrapper from "@/hooks/useContextWrapper";
 
 export interface IAnimationContext {
-  animationState: "playing" | "loading" | "paused";
+  animationState: "playing" | "loading" | "paused" | "stopped";
   setAnimationState: React.Dispatch<
     React.SetStateAction<IAnimationContext["animationState"]>
   >;
@@ -38,7 +38,7 @@ export const AnimationContextProvider = ({
   children,
 }: React.PropsWithChildren<{}>) => {
   const [animationState, setAnimationState] =
-    useState<IAnimationContext["animationState"]>("paused");
+    useState<IAnimationContext["animationState"]>("stopped");
   const [frameCount, setFrameCount] =
     useState<IAnimationContext["frameCount"]>(18);
   const [currentFrame, setCurrentFrame] = useState<

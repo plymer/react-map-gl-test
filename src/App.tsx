@@ -35,12 +35,45 @@ function App() {
   const geoMetContext = useGeoMetContext();
   const animation = useAnimationContext();
 
+  function buildLayers(config?: LayerDetails[] | undefined) {
+    config?.map((layer) => console.log(layer.name));
+
+    // setLayerConfig(undefined);
+
+    return (
+      <>
+        {geoMetContext.showRadar === true ? (
+          <GeoMetLayer
+            type="radar"
+            product={geoMetContext.radarProduct}
+            belowLayer="wateroutline"
+          />
+        ) : (
+          ""
+        )}
+
+        <GeoMetLayer
+          type="satellite"
+          product={geoMetContext.subProduct}
+          domain="west"
+          belowLayer="wateroutline"
+        />
+        <GeoMetLayer
+          type="satellite"
+          product={geoMetContext.subProduct}
+          domain="east"
+          belowLayer="wateroutline"
+        />
+      </>
+    );
+  }
+
   // contains all of the data layers that are loaded based on the map style defined in the 'basemap' JSON
   const [baseMapLayers, setBaseMapLayers] = useState<string[]>();
   // holds the ids of all of the layers that are currently being displayed on the map
   const [layers, setLayers] = useState<string[]>();
   // the configuration for programmatically adding and removing layers from the <Map> object below
-  const [layerConfig, setLayerConfig] = useState<LayerDetails>();
+  // const [layerConfig, setLayerConfig] = useState<LayerDetails[] | undefined>();
 
   // controls the state of the loading spinner
   const [isLoading, setIsLoading] = useState(false);
@@ -103,28 +136,7 @@ function App() {
         }
         onClick={() => console.log(baseMapLayers)}
       >
-        {geoMetContext.showRadar === true ? (
-          <GeoMetLayer
-            type="radar"
-            product={geoMetContext.radarProduct}
-            belowLayer="wateroutline"
-          />
-        ) : (
-          ""
-        )}
-
-        <GeoMetLayer
-          type="satellite"
-          product={geoMetContext.subProduct}
-          domain="west"
-          belowLayer="wateroutline"
-        />
-        <GeoMetLayer
-          type="satellite"
-          product={geoMetContext.subProduct}
-          domain="east"
-          belowLayer="wateroutline"
-        />
+        {buildLayers()}
 
         <AttributionControl compact position="top-right" />
       </Map>

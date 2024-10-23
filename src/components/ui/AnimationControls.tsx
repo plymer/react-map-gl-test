@@ -100,7 +100,8 @@ const AnimationControls = () => {
     // console.log(code);
     switch (code) {
       case "Space":
-        if (animation.animationState === "paused" || "loading") return "play";
+        if (animation.animationState === "paused" || "loading" || "stopped")
+          return "play";
         else return "pause";
       case "Comma":
         return "prev";
@@ -195,7 +196,10 @@ const AnimationControls = () => {
       return "";
     } else if (command === "play" && animation.animationState === "loading") {
       return "";
-    } else if (command === "pause" && animation.animationState === "paused") {
+    } else if (
+      (command === "pause" && animation.animationState === "paused") ||
+      (command === "pause" && animation.animationState === "stopped")
+    ) {
       return "";
     } else {
       return button;
