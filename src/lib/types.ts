@@ -13,4 +13,5 @@ export type LayerDetails = {
   type: string;
   domain: "west" | "east" | undefined;
   product: string | undefined;
+  position: number;
 };

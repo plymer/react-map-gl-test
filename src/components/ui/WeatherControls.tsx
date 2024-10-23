@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/Label";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { MapIcon } from "lucide-react";
 
-import { SATELLITE_CHANNELS } from "@/lib/constants";
+import { SATELLITE_CHANNELS } from "@/config/satellite";
 import { useGeoMetContext } from "@/contexts/geometContext";
 
 export default function WeatherControls() {

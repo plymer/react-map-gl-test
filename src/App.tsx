@@ -16,6 +16,7 @@ import GeoMetLayer from "@/components/data-layers/GeoMetLayer";
 import MapStatusBar from "@/components/ui/MapStatusBar";
 import SynchroClock from "@/components/other/SynchroClock";
 import MapControls from "@/components/ui/MapControls";
+import LayerList from "@/components/ui/LayerList";
 
 // helpers
 import { LayerDetails, View } from "@/lib/types";
@@ -30,10 +31,16 @@ import { useAnimationContext } from "@/contexts/animationContext";
 const DEFAULT_VIEW: View = { lon: -95, lat: 53, zoom: 3.25 };
 
 function App() {
+  // set up the contexts required for data retrieval and animation of the map data
   const geoMetContext = useGeoMetContext();
   const animation = useAnimationContext();
 
-  const [layers, setLayers] = useState<LayerDetails[]>();
+  // contains all of the data layers that are loaded based on the map style defined in the 'basemap' JSON
+  const [baseMapLayers, setBaseMapLayers] = useState<string[]>();
+  // holds the ids of all of the layers that are currently being displayed on the map
+  const [layers, setLayers] = useState<string[]>();
+  // the configuration for programmatically adding and removing layers from the <Map> object below
+  const [layerConfig, setLayerConfig] = useState<LayerDetails>();
 
   // controls the state of the loading spinner
   const [isLoading, setIsLoading] = useState(false);
@@ -57,13 +64,22 @@ function App() {
         maxBounds={MAP_BOUNDS}
         style={{ width: "100%", height: "100vh" }}
         mapStyle={basemap as StyleSpecification}
+        onStyleData={(e) => {
+          // make sure we know what layers are in use by the basemap so that we can filter these out from our actual data layers that we are adding later
+          // this should only fire on initial map load
+          !baseMapLayers
+            ? setBaseMapLayers(e.target.getLayersOrder())
+            : setLayers(
+                e.target
+                  .getLayersOrder()
+                  .filter((layer) => !baseMapLayers.includes(layer)),
+              );
+        }}
         onSourceData={(e) => {
-          if (e.isSourceLoaded === false) {
-            console.log(e.sourceId, "is loading");
-          } else {
+          if (e.isSourceLoaded) {
+            // console.log(e.target.getLayersOrder());
             console.log(e.sourceId, "completed loading");
           }
-
           setIsLoading(true);
           // we set our 'isLoading' flag to true any time one of the layers in the map is loading data
           // this allows us to show the loading spinner active
@@ -85,6 +101,7 @@ function App() {
             setZoom(e.viewState.zoom);
           }
         }
+        onClick={() => console.log(baseMapLayers)}
       >
         {geoMetContext.showRadar === true ? (
           <GeoMetLayer
@@ -118,6 +135,7 @@ function App() {
       </ClockContextProvider>
 
       <MapControls />
+      <LayerList layerNames={layers} />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { createContext, useMemo, useState } from "react";
 import useContextWrapper from "@/hooks/useContextWrapper";
+import { SATELLITE_CHANNELS } from "@/config/satellite";
 
 export interface IGeoMetContext {
   subProduct?: string;
@@ -22,7 +23,7 @@ export const GeoMetContextProvider = ({
   children,
 }: React.PropsWithChildren<{}>) => {
   const [subProduct, setSubProduct] = useState<IGeoMetContext["subProduct"]>(
-    "1km_DayCloudType-NightMicrophysics",
+    SATELLITE_CHANNELS[0].wms,
   );
 
   const [radarProduct, setRadarProduct] =
